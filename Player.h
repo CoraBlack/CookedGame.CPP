@@ -1,0 +1,16 @@
+//玩家Player类的设计
+#include<string>
+#ifndef PLAYER_H
+#define PLAYER_H
+class Player
+{
+public:
+	void SetPlayerName(std::string str);//设置玩家名称
+	void SetPlayerMoney(float fl);//设置玩家钱财
+	std::string GetPlayerName();//获取玩家名称
+	float GetPlayerMoney();//获取玩家钱财
+private:
+	std::string name;
+	float money = 0;
+};
+#endif // !PLAYER_H
