@@ -3,7 +3,7 @@
 class Restaurant
 {
 public:
-	void SetLevel();		//设置餐馆等级
+	void SetLevel(int num);		//设置餐馆等级
 	void SetCostomerMax(); //设置最大纳客量
 	void SetWareHouseMax();//设置最大存货量
 private:

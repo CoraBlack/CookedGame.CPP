@@ -29,18 +29,18 @@ void PrintVerbatim(std::string str) {
 }
 ;
 void PauseMenu() {
-	std::cout << "[Esc]返回\n[Tab]设置\n[Back]退出游戏\n";
+	std::cout << green << "[Esc]返回\n[Tab]设置\n[Back]退出游戏\n";
 	while (1){
 		int input = _getch();
 		switch (input) {
 		case 9://Tab
-
+			return;
 			break;
 		case 27://Esc
 
 			break;
 		case 8://Back
-
+			
 			break;
 		default:
 			break;
@@ -85,7 +85,8 @@ void GameStart() {
 			return ReadSaveFlie();
 			break;
 		case 27://Esc
-
+			system("cls");
+			PauseMenu();
 			break;
 		default:
 			break;
@@ -95,40 +96,42 @@ void GameStart() {
 ;
 void CreateNewSave(){
 	//输入新存档名称
-	std::cout << yellow << "输入新的存档名称:" << green << std::endl;
+	std::cout << yellow << "输入新的存档名称:" << white << std::endl;
 	getline(std::cin, save_name);
 	//防止输入内容为空
 	if (save_name == "") {
-		std::cerr << "存档名称不能为空！！！" << white << std::endl;
-		Sleep(2000);
+		system("cls");
+		std::cerr << red << "存档名称不能为空！！！" << white << std::endl;
+		return CreateNewSave();
+	}else if (save_name == "Exit") {//禁用Exit作为存档名
+		system("cls");
+		std::cerr << red << "程序中借用了Exit作为程序操作字符，不可使用该字符作为存档名" << white << std::endl;
+		save_name = "";
 		return CreateNewSave();
 	}
 	//补全文件格式
 	save_name += ".txt";
 	//检查是否已存在该存档
-	std::fstream check;
-	check.open(save_name, std::ios::trunc);
-	if (check.is_open()) {
+	std::fstream savefile(save_name);
+	if (savefile.good()) {
 		//检测到重名文件(有bug目前)
-		std::cerr << yellow << "Warning:检测到存档文件已存在，是否继续创建？" << white << "[Space]继续\n[Esc]返回\n";
+		std::cerr << yellow << "Warning:检测到存档文件已存在，是否继续创建？\n" << white << green << "[Space]继续\n[Esc]返回\n" << white;
 		int input = 0;
 		//输入为Space时继续
 		do {
 			input = _getch();
 			if (input == 27) {
 				//输入ESC时重新创建
-				check.close();
-				check.clear();
+				system("cls");
 				return GameStart();
 			}
-		} while (input != 32);
+		} while (input != 32);//强制创建同名文件
 	}
-	else {
 		//继续创建
 		std::ofstream newsave;
 		newsave.open(save_name, std::ios::out);
 		if (!newsave.is_open()) {
-			std::cerr << red << "Wrong!文件无法创建,即将返回开始菜单\n" << white;
+			std::cerr << red << "Wrong!文件无法创建(无法打开文件),即将返回开始菜单\n" << white;
 			Sleep(3000);
 		}
 		else {
@@ -140,13 +143,22 @@ void CreateNewSave(){
 			system("pause");
 		}
 		return NewGame();
-	}
+	
 }
 ;
 void ReadSaveFlie(){
 	//输入文件名称
-	std::cout << yellow << "请输入您的存档名称" << std::endl;
+	system("cls");
+	std::cout << yellow << "请输入您的存档名称(输入Exit退出输入)" << white <<std::endl;
 	getline(std::cin, save_name);
+	if (save_name == "") {//防止为空
+		system("cls");
+		std::cerr << red << "存档名称不能为空！！！" << white << std::endl;
+		return ReadSaveFlie();
+	}else if (save_name == "Exit"){//输入Exit时
+		system("cls");
+		return GameStart();
+	}
 	save_name += ".txt";
 	//获取文件内容输入流
 	std::ifstream getfile;
@@ -160,7 +172,7 @@ void ReadSaveFlie(){
 	}else {
 		std::cerr << red << "检测不到存档文件关键字，为保护游戏运行正常，将返回游戏主界面" << white << std::endl;
 		save_name = "";//重置
-
+		return GameStart();
 	}
 	return;
 }

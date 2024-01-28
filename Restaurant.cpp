@@ -1,6 +1,6 @@
-#include "restaurant.h"
+#include "Restaurant.h"
 
-void SetLevel(){
+void SetLevelint (int num){
 
 }
 
