@@ -8,6 +8,7 @@ extern std::string red;
 extern std::string yellow;
 extern std::string green;
 extern std::string white;
+extern std::string deep_green;//深绿
 //全局变量
 
 //函数声明
@@ -17,6 +18,8 @@ void GameStart();
 void CreateNewSave();//新建存档
 void ReadSaveFlie();//读取存档
 void NewGame();//新游戏
+void OpenResMenu();//营业时对餐厅的操作
+void CloseResMenu();//暂停营业餐厅操作界面
 void PrintVerbatim(std::string str);//逐字打印
 void Initialize();	//初始化
 void CreateMainGui();//主要UI操作界面

@@ -10,6 +10,7 @@ std::string red = "\033[31m";
 std::string green = "\033[32m";
 std::string yellow = "\033[33m";
 std::string white = "\033[0m";
+std::string deep_green = "\033[36m";
 ;
 //Class实例化
 Restaurant myres;
@@ -58,7 +59,7 @@ void GameStart() {
 	while (1) {
 		int input = _getch();//获取键盘输入
 		//测试用（查看输入值）
-		//std::cout << input << std::endl;
+		std::cout << input << std::endl;
 		switch (input) {
 		case 9://Tab
 			system("cls");
@@ -174,11 +175,47 @@ void ReadSaveFlie(){
 		save_name = "";//重置
 		return GameStart();
 	}
-	return;
+	;
+	;
+	//读档过程
+
+
+	//进入游戏
+	std::cout << green << "存档读取完毕" << white;
+	system("pause");
+	system("cls");
+	return CloseResMenu();
 }
 ;
 void NewGame() {
 
+}
+;
+void OpenResMenu(){
+
+}
+;
+void CloseResMenu(){
+	std::cout << yellow <<  "您接下来要做什么?[您的餐馆处于" << deep_green << "关门" << yellow << "状态]" << std::endl;
+	std::cout << green << "[Tab]开店[1]食材市场[2]店面布设" << white << std::endl;
+	//选项
+	while (1) {
+		int input = _getch();
+		switch (input) {
+		case 9://Tab
+			myres.SetOpenState(1);
+			return OpenResMenu();
+			break;
+		case 49://1
+
+			break;
+		case 50:
+
+			break;
+		default:
+			break;
+		}
+	}
 }
 ;
 void Initialize() {

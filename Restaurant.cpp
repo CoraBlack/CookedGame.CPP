@@ -1,13 +1,10 @@
 #include "Restaurant.h"
+void Restaurant::SetLevel(int num){level = num; return;}
 
-void SetLevelint (int num){
+void Restaurant::SetCostomerMax(int num){cosmax = num; return;}
 
-}
+void Restaurant::SetWareHouseMax(int num){warehouse = num; return;}
 
-void SetCostomerMax(){
+void Restaurant::SetOpenState(bool state) { open = state; return; }
 
-}
-
-void SetWareHouseMax(){
-
-}
+bool Restaurant::GetOpenState() { return open; }
