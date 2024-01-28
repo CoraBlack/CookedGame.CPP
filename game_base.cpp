@@ -1,4 +1,4 @@
-//¶¨ÒåÓÎÏ·µÄ»ù´¡º¯Êı
+ï»¿//å®šä¹‰æ¸¸æˆçš„åŸºç¡€å‡½æ•°
 #include"statement.h"
 #include<iostream>
 #include<Windows.h>
@@ -11,13 +11,13 @@ std::string green = "\033[32m";
 std::string yellow = "\033[33m";
 std::string white = "\033[0m";
 ;
-//ClassÊµÀı»¯
+//Classå®ä¾‹åŒ–
 Restaurant myres;
 Player player;
 ;
-//´æµµÃû³Æ
+//å­˜æ¡£åç§°
 std::string save_name = "";
-const char* checkword = "CheckWord114514";//ÓÃÓÚ¼ì²âÎÄ¼şÎª´æµµÎÄ¼şµÄ±êÊ¶·û
+const char* checkword = "CheckSave114514";//ç”¨äºæ£€æµ‹æ–‡ä»¶ä¸ºå­˜æ¡£æ–‡ä»¶çš„æ ‡è¯†ç¬¦
 void PrintVerbatim(std::string str) {
 	for (int i = 0; i < str.size();) {
 		std::cout << str[i];
@@ -29,7 +29,7 @@ void PrintVerbatim(std::string str) {
 }
 ;
 void PauseMenu() {
-	std::cout << "[Esc]·µ»Ø\n[Tab]ÉèÖÃ\n[Back]ÍË³öÓÎÏ·\n";
+	std::cout << "[Esc]è¿”å›\n[Tab]è®¾ç½®\n[Back]é€€å‡ºæ¸¸æˆ\n";
 	while (1){
 		int input = _getch();
 		switch (input) {
@@ -53,17 +53,17 @@ void SettingMenu() {
 }
 ;
 void GameStart() {
-	std::cout << yellow << "Cooked£¡" << std::endl;
-	std::cout << green << "[Tab]ĞÂÓÎÏ·\n[Space]¶ÁÈ¡ÓÎÏ·\n[Esc]ÉèÖÃ" << white << std::endl;
+	std::cout << yellow << "Cookedï¼" << std::endl;
+	std::cout << green << "[Tab]æ–°æ¸¸æˆ\n[Space]è¯»å–æ¸¸æˆ\n[Esc]è®¾ç½®" << white << std::endl;
 	while (1) {
-		int input = _getch();//»ñÈ¡¼üÅÌÊäÈë
-		//²âÊÔÓÃ£¨²é¿´ÊäÈëÖµ£©
+		int input = _getch();//è·å–é”®ç›˜è¾“å…¥
+		//æµ‹è¯•ç”¨ï¼ˆæŸ¥çœ‹è¾“å…¥å€¼ï¼‰
 		//std::cout << input << std::endl;
 		switch (input) {
 		case 9://Tab
 			system("cls");
-			std::cout << yellow << "ÄãÕæµÄĞèÒª´´½¨Ò»¸öĞÂÓÎÏ·Âğ?\n" << green << "[Tab]È·¶¨´´½¨ĞÂÓÎÏ·\n[Esc]È¡Ïû´´½¨" << std::endl;
-			input = 0;//ÖØÖÃÊäÈëÖµ
+			std::cout << yellow << "ä½ çœŸçš„éœ€è¦åˆ›å»ºä¸€ä¸ªæ–°æ¸¸æˆå—?\n" << green << "[Tab]ç¡®å®šåˆ›å»ºæ–°æ¸¸æˆ\n[Esc]å–æ¶ˆåˆ›å»º" << std::endl;
+			input = 0;//é‡ç½®è¾“å…¥å€¼
 			while (1){
 				input = _getch();
 				switch (input) {
@@ -82,7 +82,7 @@ void GameStart() {
 			}
 			break;
 		case 32://Space
-
+			return ReadSaveFlie();
 			break;
 		case 27://Esc
 
@@ -92,40 +92,77 @@ void GameStart() {
 		}
 	}
 }
+;
 void CreateNewSave(){
-	//ÊäÈëĞÂ´æµµÃû³Æ
-	std::cout << yellow << "ÊäÈëĞÂµÄ´æµµÃû³Æ:" << green << std::endl;
+	//è¾“å…¥æ–°å­˜æ¡£åç§°
+	std::cout << yellow << "è¾“å…¥æ–°çš„å­˜æ¡£åç§°:" << green << std::endl;
 	getline(std::cin, save_name);
+	//é˜²æ­¢è¾“å…¥å†…å®¹ä¸ºç©º
+	if (save_name == "") {
+		std::cerr << "å­˜æ¡£åç§°ä¸èƒ½ä¸ºç©ºï¼ï¼ï¼" << white << std::endl;
+		Sleep(2000);
+		return CreateNewSave();
+	}
+	//è¡¥å…¨æ–‡ä»¶æ ¼å¼
 	save_name += ".txt";
-	//¼ì²éÊÇ·ñÒÑ´æÔÚ¸Ã´æµµ
-	std::ifstream check;
+	//æ£€æŸ¥æ˜¯å¦å·²å­˜åœ¨è¯¥å­˜æ¡£
+	std::fstream check;
 	check.open(save_name, std::ios::trunc);
 	if (check.is_open()) {
-		//¼ì²âµ½ÖØÃûÎÄ¼ş(ÓĞbugÄ¿Ç°)
-		std::cerr << yellow << "Warning:¼ì²âµ½´æµµÎÄ¼şÒÑ´æÔÚ£¬ÊÇ·ñ¼ÌĞø´´½¨£¿" << white << "[Space]¼ÌĞø\n[Esc]·µ»Ø\n";
+		//æ£€æµ‹åˆ°é‡åæ–‡ä»¶(æœ‰bugç›®å‰)
+		std::cerr << yellow << "Warning:æ£€æµ‹åˆ°å­˜æ¡£æ–‡ä»¶å·²å­˜åœ¨ï¼Œæ˜¯å¦ç»§ç»­åˆ›å»ºï¼Ÿ" << white << "[Space]ç»§ç»­\n[Esc]è¿”å›\n";
 		int input = 0;
-		//ÊäÈëÎªSpaceÊ±¼ÌĞø
+		//è¾“å…¥ä¸ºSpaceæ—¶ç»§ç»­
 		do {
 			input = _getch();
 			if (input == 27) {
-				//ÊäÈëESCÊ±ÖØĞÂ´´½¨
+				//è¾“å…¥ESCæ—¶é‡æ–°åˆ›å»º
+				check.close();
+				check.clear();
 				return GameStart();
 			}
 		} while (input != 32);
 	}
-	//¼ÌĞø´´½¨
-	std::ofstream newsave;
-	newsave.open(save_name,std::ios::out);
-	if (!newsave.is_open()) {
-		std::cerr << red << "Wrong!ÎÄ¼şÎŞ·¨´´½¨,¼´½«·µ»Ø¿ªÊ¼²Ëµ¥\n" << white;
-		Sleep(3000);
-	}else{
-		//Ğ´ÈëÑéÖ¤×Ö·û
-		newsave << checkword;
-		std::cout << green << "´´½¨ÁËĞÂµÄ´æµµ" << yellow << save_name << white;
-		system("pause");
+	else {
+		//ç»§ç»­åˆ›å»º
+		std::ofstream newsave;
+		newsave.open(save_name, std::ios::out);
+		if (!newsave.is_open()) {
+			std::cerr << red << "Wrong!æ–‡ä»¶æ— æ³•åˆ›å»º,å³å°†è¿”å›å¼€å§‹èœå•\n" << white;
+			Sleep(3000);
+		}
+		else {
+			//å†™å…¥éªŒè¯å­—ç¬¦
+			newsave << checkword;
+			std::cout << green << "åˆ›å»ºäº†æ–°çš„å­˜æ¡£" << yellow << save_name << std::endl << white;
+			newsave.close();
+			newsave.clear();
+			system("pause");
+		}
+		return NewGame();
 	}
-	return NewGame();
+}
+;
+void ReadSaveFlie(){
+	//è¾“å…¥æ–‡ä»¶åç§°
+	std::cout << yellow << "è¯·è¾“å…¥æ‚¨çš„å­˜æ¡£åç§°" << std::endl;
+	getline(std::cin, save_name);
+	save_name += ".txt";
+	//è·å–æ–‡ä»¶å†…å®¹è¾“å…¥æµ
+	std::ifstream getfile;
+	getfile.open(save_name, std::ios::in);
+	std::string check_temp;//ç”¨äºå­˜å‚¨æ–‡ä»¶ç¬¬ä¸€è¡Œå­—ç¬¦çš„ä¸´æ—¶å˜é‡
+	getfile >> check_temp;
+	//éªŒè¯æ ‡è¯†ç¬¦
+	if (check_temp == checkword) {
+		std::cout << yellow << "æ­£åœ¨è¯»å–æ•°æ®ï¼Œå­˜æ¡£å" << green << save_name <<white << std::endl;
+
+	}else {
+		std::cerr << red << "æ£€æµ‹ä¸åˆ°å­˜æ¡£æ–‡ä»¶å…³é”®å­—ï¼Œä¸ºä¿æŠ¤æ¸¸æˆè¿è¡Œæ­£å¸¸ï¼Œå°†è¿”å›æ¸¸æˆä¸»ç•Œé¢" << white << std::endl;
+		save_name = "";//é‡ç½®
+
+	}
+	return;
 }
 ;
 void NewGame() {

@@ -15,6 +15,7 @@ void PauseMenu();//暂停界面
 void SettingMenu();//游戏设置菜单
 void GameStart();
 void CreateNewSave();//新建存档
+void ReadSaveFlie();//读取存档
 void NewGame();//新游戏
 void PrintVerbatim(std::string str);//逐字打印
 void Initialize();	//初始化
