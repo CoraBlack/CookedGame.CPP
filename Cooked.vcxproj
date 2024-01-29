@@ -131,11 +131,13 @@
     <ClCompile Include="game_base.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Restaurant.cpp" />
     <ClCompile Include="说明文件.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Costomer.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Restaurant.h" />
     <ClInclude Include="statement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
