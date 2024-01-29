@@ -12,16 +12,27 @@ extern std::string yellow;
 extern std::string green;
 extern std::string white;
 extern std::string blue;
-//变量声明
-extern std::vector<Thread>threads;				//线程集（用于管理子线程）
+//结构体定义
+//食材
+struct ingredient {
+	std::string name;
+	int price;		//价格
+	int possession;	//拥有量
+};
 ;
-extern struct ingredient;//食材信息结构体
 extern std::vector<ingredient>vegetable;		//蔬菜类食材
 extern std::vector<ingredient>meat;				//肉类食材
 extern std::vector <std::vector<ingredient>>all_ingredient;	//全部食材
 ;
-extern struct cuisine;//菜肴信息结构体
+//菜肴
+struct cuisine {
+	std::string name;
+	int price;	//价格
+};
 extern std::vector<cuisine>all_cuisine;			//全部菜肴
+;
+//变量声明
+extern std::vector<Thread>threads;				//线程集（用于管理子线程）
 ;
 //食材购物车
 std::vector<ingredient>shopping_cart;

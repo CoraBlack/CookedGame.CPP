@@ -16,19 +16,6 @@ std::string blue = "\033[36m";
 ;
 //线程组
 std::vector<Thread>threads;
-
-//食材
-struct ingredient {
-	std::string name;
-	int price;		//价格
-	int possession;	//拥有量
-};
-;
-//菜肴
-struct cuisine{
-	std::string name;
-	int price;	//价格
-};
 //Class实例化
 Restaurant myres;
 Player player;
