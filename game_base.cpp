@@ -3,10 +3,7 @@
 #include<iostream>
 #include<Windows.h>
 #include"conio.h"
-#include"Restaurant.h"
-#include"Player.h"
 #include<fstream>
-#include"Thread.h"
 //字体颜色
 std::string red = "\033[31m";
 std::string green = "\033[32m";
@@ -14,17 +11,28 @@ std::string yellow = "\033[33m";
 std::string white = "\033[0m";
 std::string blue = "\033[36m";
 ;
+//statement.h中全局变量的定义区（防止链接器错误）
+//Class对象
+Player* player;
+Restaurant* restaurant;
+Costomer* costomer;
+;
+//食材
+std::vector<ingredient>shopping_cart;	//食材购物车
+std::vector<ingredient>vegetable;		//蔬菜类食材
+std::vector<ingredient>meat;				//肉类食材
+std::vector <std::vector<ingredient>>all_ingredient;	//全部食材
+;
+//菜肴
+std::vector<cuisine>all_cuisine;			//全部菜肴
+;
 //线程组
 std::vector<Thread>threads;
-//Class实例化
-Restaurant myres;
-Player player;
-;
 //存档名称
 std::string save_name = "";
 //用于检测文件为存档文件的标识符
 const char* checkword = "CheckSave114514";
-;
+int (*fucptr) ();
 ;
 //函数定义区
 void PrintVerbatim(std::string str) {
@@ -35,6 +43,11 @@ void PrintVerbatim(std::string str) {
 	}
 	std::cout << std::endl;
 	return;
+}
+;
+int Random(int min, int max){
+	int num = rand() % max - min;
+	return num;
 }
 ;
 void PauseMenu() {
@@ -214,7 +227,7 @@ void CloseResMenu(){
 		int input = _getch();
 		switch (input) {
 		case 9://Tab
-			myres.SetOpenState(1);
+			restaurant->SetOpenState(1);
 			return OpenResMenu();
 			break;
 		case 49://1
@@ -258,7 +271,10 @@ void IngredientMarket(){
 }
 ;
 void Initialize() {
-	Sleep(5000);
+	//实例化对象
+	Player *player = new Player();
+	Restaurant *restaurant = new Restaurant;
+	Costomer *costomer = new Costomer;
 	//std::cout << green << "Finish to initialize!";
 	return;
 }
@@ -287,3 +303,4 @@ void CreateMainGui(){
 void ThreadTest(){
 	
 }
+

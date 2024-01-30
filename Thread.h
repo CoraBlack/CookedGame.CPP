@@ -4,6 +4,7 @@
 class Thread
 {
 public:
+	Thread();
 	void ThreadStop();	//终止进程
 	void ThreadPause();	//暂停进程
 	void ThreadRun();	//继续进程

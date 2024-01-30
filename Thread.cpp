@@ -1,6 +1,11 @@
 #include "Thread.h"
 #include"statement.h"
 
+Thread::Thread(){
+	std::thread newthread;
+
+}
+
 void Thread::ThreadStop(){
 }
 

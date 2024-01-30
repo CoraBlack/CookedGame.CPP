@@ -4,6 +4,7 @@
 class Costomer
 {
 public:
+	Costomer();
 	void Count();//计时器
 	void Enter();//进店
 	void Leave();//离开
