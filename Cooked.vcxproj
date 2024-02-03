@@ -131,14 +131,18 @@
     <ClCompile Include="game_base.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Plot.cpp" />
     <ClCompile Include="Restaurant.cpp" />
+    <ClCompile Include="Thread.cpp" />
     <ClCompile Include="说明文件.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Costomer.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Plot.h" />
     <ClInclude Include="Restaurant.h" />
     <ClInclude Include="statement.h" />
+    <ClInclude Include="Thread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
