@@ -12,8 +12,8 @@ public:
 	float GetPlayerMoney();//获取玩家钱财
 	
 private:
-	std::string name;
+	std::string name = "";
 	float money = 0;
-	int location;//玩家所在餐厅位置
+	int location = 0;//玩家所在餐厅位置
 };
 #endif // !PLAYER_H

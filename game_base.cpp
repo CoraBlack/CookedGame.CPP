@@ -3,22 +3,38 @@
 #include<iostream>
 #include<Windows.h>
 #include"conio.h"
-#include"Restaurant.h"
-#include"Player.h"
 #include<fstream>
+//字体颜色
 std::string red = "\033[31m";
 std::string green = "\033[32m";
 std::string yellow = "\033[33m";
 std::string white = "\033[0m";
-std::string deep_green = "\033[36m";
+std::string blue = "\033[36m";
 ;
-//Class实例化
-Restaurant myres;
-Player player;
+//statement.h中全局变量的定义区（防止链接器错误）
+//Class对象
+Player* player;
+Restaurant* restaurant;
+Costomer* costomer;
 ;
+//食材
+std::vector<ingredient>shopping_cart;	//食材购物车
+std::vector<ingredient>vegetable;		//蔬菜类食材
+std::vector<ingredient>meat;				//肉类食材
+std::vector <std::vector<ingredient>>all_ingredient;	//全部食材
+;
+//菜肴
+std::vector<cuisine>all_cuisine;			//全部菜肴
+;
+//线程组
+std::vector<Thread>threads;
 //存档名称
 std::string save_name = "";
-const char* checkword = "CheckSave114514";//用于检测文件为存档文件的标识符
+//用于检测文件为存档文件的标识符
+const char* checkword = "CheckSave114514";
+int (*fucptr) ();
+;
+//函数定义区
 void PrintVerbatim(std::string str) {
 	for (int i = 0; i < str.size();) {
 		std::cout << str[i];
@@ -27,6 +43,11 @@ void PrintVerbatim(std::string str) {
 	}
 	std::cout << std::endl;
 	return;
+}
+;
+int Random(int min, int max){
+	int num = rand() % max - min;
+	return num;
 }
 ;
 void PauseMenu() {
@@ -54,6 +75,8 @@ void SettingMenu() {
 }
 ;
 void GameStart() {
+	system("cls");
+	//输出内容
 	std::cout << yellow << "Cooked！" << std::endl;
 	std::cout << green << "[Tab]新游戏\n[Space]读取游戏\n[Esc]设置" << white << std::endl;
 	while (1) {
@@ -188,7 +211,7 @@ void ReadSaveFlie(){
 }
 ;
 void NewGame() {
-
+	return CloseResMenu();
 }
 ;
 void OpenResMenu(){
@@ -196,20 +219,21 @@ void OpenResMenu(){
 }
 ;
 void CloseResMenu(){
-	std::cout << yellow <<  "您接下来要做什么?[您的餐馆处于" << deep_green << "关门" << yellow << "状态]" << std::endl;
-	std::cout << green << "[Tab]开店[1]食材市场[2]店面布设" << white << std::endl;
+	system("cls");
+	std::cout << yellow <<  "您接下来要做什么?[您的餐馆处于" << blue << "关门" << yellow << "状态]" << std::endl;
+	std::cout << green << "[Tab]开店\n[1]食材市场\n[2]店面布设\n" << white << std::endl;
 	//选项
 	while (1) {
 		int input = _getch();
 		switch (input) {
 		case 9://Tab
-			myres.SetOpenState(1);
+			restaurant->SetOpenState(1);
 			return OpenResMenu();
 			break;
 		case 49://1
-
+			return IngredientMarket();
 			break;
-		case 50:
+		case 50://2
 
 			break;
 		default:
@@ -218,12 +242,43 @@ void CloseResMenu(){
 	}
 }
 ;
+void IngredientMarket(){
+	std::cout << blue << "Welcome to Ingredient Market!" << std::endl;
+	std::cout << yellow << "[Esc]返回小餐馆(记得付款喔!)\n[Tab]结账\n[Space]购物车\n" << green << "[1]蔬菜\n[2]肉类\n[3]蛋奶制品\n[4]调味品\n";
+	while (1) {
+		int input = _getch();
+		switch (input){
+		case 9://Tab
+
+			break;
+		case 27://Esc
+			//检查购物车是否为空
+			if (shopping_cart.empty()) {
+				return CloseResMenu();
+			}
+			else {
+				//购物车不为空
+				system("cls");
+				std::cout << yellow << "您的购物车还有未付款的食材商品！\n";
+				return IngredientMarket();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	return;
+}
+;
 void Initialize() {
-	Sleep(5000);
+	//实例化对象
+	Player *player = new Player();
+	Restaurant *restaurant = new Restaurant;
+	Costomer *costomer = new Costomer;
 	//std::cout << green << "Finish to initialize!";
 	return;
 }
-
+;
 void CreateMainGui(){
 	for (int i = 0; i < 60;) {
 		std::cout << "_";
@@ -244,3 +299,8 @@ void CreateMainGui(){
 		i++;
 	}
 }
+;
+void ThreadTest(){
+	
+}
+
