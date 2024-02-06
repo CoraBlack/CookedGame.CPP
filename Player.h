@@ -13,7 +13,8 @@ public:
 	
 private:
 	std::string name = "";
-	float money = 0;
+	float money = 1000;
 	int location = 0;//玩家所在餐厅位置
 };
+extern Player* player;
 #endif // !PLAYER_H
