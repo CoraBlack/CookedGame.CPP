@@ -40,7 +40,6 @@ IngredientMarketUI* market_weight = new IngredientMarketUI();
 ;
 //主函数
 int main(){
-<<<<<<< HEAD
     thread initialize_td(Initialize);//创建一条线程用于处理初始化内容
     initialize_td.detach();//将初始化进程后台处理
     /*
@@ -54,11 +53,6 @@ int main(){
  //实例化对象
     
     ;
-=======
-    thread initialize(Initialize);//创建一条线程用于处理初始化内容
-    initialize.detach();//将初始化进程后台处理
-
->>>>>>> c903271ae81cd1d839576afdfa3e32bd9ddd82a0
     //开场文字（调试先屏蔽）
     /*
     cout << yellow << "Warning：\n" << white << "本游戏仅能在Windows平台上运行，且版本不低于Win10，望周知！\n";
