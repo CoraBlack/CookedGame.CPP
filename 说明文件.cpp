@@ -1,20 +1,20 @@
-//ÕâÀïÖ»ÊÇÓÃÀ´Ð´¿ª·¢¹æ·¶
-//²»ÒªÐ´ÈÎºÎ´úÂë
-//£¡£¡£¡£¡£¡£¡£¡£¡
+//è¿™é‡Œåªæ˜¯ç”¨æ¥å†™å¼€å‘è§„èŒƒ
+//ä¸è¦å†™ä»»ä½•ä»£ç 
+//ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼
 
-//ÃüÃû¹æ·¶
-/*¶ÔÓÚ±äÁ¿£º
-	ÎÒÃÇÍ³Ò»²ÉÓÃÐ¡Ð´£¬ÈôÐèÒªÆ´½Ó¶à¸öµ¥´Ê£¬ÓÃ¡±_¡°À´Á´½Ó
-	such as£ºstring student_name
+//å‘½åè§„èŒƒ
+/*å¯¹äºŽå˜é‡ï¼š
+	æˆ‘ä»¬ç»Ÿä¸€é‡‡ç”¨å°å†™ï¼Œè‹¥éœ€è¦æ‹¼æŽ¥å¤šä¸ªå•è¯ï¼Œç”¨â€_â€œæ¥é“¾æŽ¥
+	such asï¼šstring student_name
 	*/
-/*¶ÔÓÚº¯Êý
-	ÎÒÃÇ²ÉÓÃµ¥´ÊÊ××ÖÄ¸´óÐ´À´ÃüÃû
-	such as£º void Print();
+/*å¯¹äºŽå‡½æ•°
+	æˆ‘ä»¬é‡‡ç”¨å•è¯é¦–å­—æ¯å¤§å†™æ¥å‘½å
+	such asï¼š void Print();
 			  void SetName();
 	*/
-/*¶ÔÓÚÀàµÄÉè¼Æ
-	ÃüÃû¹æ·¶ºÍº¯ÊýÒ»Ñù£¬²ÉÈ¡µ¥´ÊÊ××ÖÄ¸´óÐ´µÄ¹æ·¶
-	such as£ºclass Student
+/*å¯¹äºŽç±»çš„è®¾è®¡
+	å‘½åè§„èŒƒå’Œå‡½æ•°ä¸€æ ·ï¼Œé‡‡å–å•è¯é¦–å­—æ¯å¤§å†™çš„è§„èŒƒ
+	such asï¼šclass Student
 	*/
 
-//¼ÇµÃÐ´Çå³þ×¢ÊÍ
+//è®°å¾—å†™æ¸…æ¥šæ³¨é‡Š
