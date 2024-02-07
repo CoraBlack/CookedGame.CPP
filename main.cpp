@@ -42,17 +42,6 @@ IngredientMarketUI* market_weight = new IngredientMarketUI();
 int main(){
     thread initialize_td(Initialize);//创建一条线程用于处理初始化内容
     initialize_td.detach();//将初始化进程后台处理
-    /*
-    //Class对象
-    Player* player;
-    Restaurant* restaurant;
-    Customer* customer;
-    RestaurantUI* res_weight;
-    IngredientMarketUI* market_weight;
-    */
- //实例化对象
-    
-    ;
     //开场文字（调试先屏蔽）
     /*
     cout << yellow << "Warning：\n" << white << "本游戏仅能在Windows平台上运行，且版本不低于Win10，望周知！\n";

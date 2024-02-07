@@ -1,17 +1,17 @@
-ï»¿#include "IngredientMarketUI.h"
+#include "IngredientMarketUI.h"
 #include"statement.h"
 #include<iomanip>
 #include"conio.h"
 IngredientMarketUI::IngredientMarketUI(){
-//å­˜å…¥é£Ÿæ
+//´æÈëÊ³²Ä
 
 
-//è‚‰ç±»
-	this->meat.push_back(low_beef);
-	this->meat.push_back(low_pork);
-	this->meat.push_back(low_chicken);
-	this->meat.push_back(low_Chicken_chops);
-//å­˜å…¥å…¨ä½“ä¸­
+//ÈâÀà
+	this->meat.push_back(&low_beef);
+	this->meat.push_back(&low_pork);
+	this->meat.push_back(&low_chicken);
+	this->meat.push_back(&low_Chicken_chops);
+//´æÈëÈ«ÌåÖĞ
 	this->all_ingredient.push_back(this->vegetable);
 	this->all_ingredient.push_back(this->meat);
 }
@@ -19,33 +19,33 @@ IngredientMarketUI::IngredientMarketUI(){
 void IngredientMarketUI::IngredientMarket() {
 	system("cls");
 	std::cout << blue << "Welcome to Ingredient Market!" << Back;
-	std::cout << yellow << "[Esc]è¿”å›å°é¤é¦†(è®°å¾—ä»˜æ¬¾å–”!)\n[Tab]ç»“è´¦\n[Space]è´­ç‰©è½¦\n" 
-			  << green << "[0]å…¨éƒ¨é£Ÿæå•†å“\n[1]è”¬èœ\n[2]è‚‰ç±»\n[3]è›‹å¥¶åˆ¶å“\n[4]è°ƒå‘³å“\n";
+	std::cout << yellow << "[Esc]·µ»ØĞ¡²Í¹İ(¼ÇµÃ¸¶¿îà¸!)\n[Tab]½áÕË\n[Space]¹ºÎï³µ\n" 
+			  << green << "[0]È«²¿Ê³²ÄÉÌÆ·\n[1]Êß²Ë\n[2]ÈâÀà\n[3]µ°ÄÌÖÆÆ·\n[4]µ÷Î¶Æ·\n";
 	while (1) {
 		int input = _getch();
 		switch (input) {
-	//å•†å“é€‰æ‹©æ“ä½œ
+	//ÉÌÆ·Ñ¡Ôñ²Ù×÷
 		case 48:
 
 			break;
 
-		case 49://è”¬èœç±»
+		case 49://Êß²ËÀà
 			system("cls");
 			return this->ChooseSomeIngredient(this->vegetable);
 			break;
 
-		case 50://è‚‰ç±»
+		case 50://ÈâÀà
 			system("cls");
 			return this->ChooseSomeIngredient(this->meat);
 			return this->IngredientMarket();
 			break;
 
-	//è¡Œä¸ºæ“ä½œ
-		case 32://Space  è´­ç‰©è½¦
-			//è´­ç‰©è½¦ä¸èƒ½ä¸ºç©º
+	//ĞĞÎª²Ù×÷
+		case 32://Space  ¹ºÎï³µ
+			//¹ºÎï³µ²»ÄÜÎª¿Õ
 			if (this->shopping_cart.empty()) {
 				system("cls");
-				std::cout << yellow << "æ‚¨è¿˜æ²¡æœ‰å°†æ‚¨æ‰€éœ€çš„å•†å“åŠ å…¥åˆ°è´­ç‰©è½¦ä¸­\n" << white;
+				std::cout << yellow << "Äú»¹Ã»ÓĞ½«ÄúËùĞèµÄÉÌÆ·¼ÓÈëµ½¹ºÎï³µÖĞ\n" << white;
 				system("pause");
 				system("cls");
 				return this->IngredientMarket();
@@ -57,51 +57,72 @@ void IngredientMarketUI::IngredientMarket() {
 			break;
 
 
-		case 9://Tab     ç»“è´¦
-			//è´­ç‰©è½¦ä¸ºç©ºè·³å›
+		case 9://Tab     ½áÕË
+			//¹ºÎï³µÎª¿ÕÌø»Ø
 			if (shopping_cart.empty()) {
 				system("cls");
-				std::cout << yellow << "æ‚¨è¿˜æ²¡æœ‰æŒ‘é€‰æ‚¨æ‰€éœ€è¦çš„å•†å“\n"<< white;
+				std::cout << yellow << "Äú»¹Ã»ÓĞÌôÑ¡ÄúËùĞèÒªµÄÉÌÆ·\n"<< white;
 				input = 0;
 				system("pause");
 				return this->IngredientMarket();
 			}
 			;
-			//åˆ—å‡ºæ‰€æœ‰å·²åŠ å…¥è´­ç‰©è½¦çš„å•†å“
+			//ÁĞ³öËùÓĞÒÑ¼ÓÈë¹ºÎï³µµÄÉÌÆ·
 			system("cls");
-			std::cout << blue << "æ‚¨çš„è´­ç‰©è½¦ï¼š\n" << yellow;
+			std::cout << blue << "ÄúµÄ¹ºÎï³µ£º\n" << yellow;
 			for (int i = 0; i < shopping_cart.size();) {
-				std::cout << "[" << i + 1 << "]" << shopping_cart[i].name << "		å•ä»·ï¼š" << shopping_cart[i].price << "\n";
+				std::cout << "[" << i + 1 << "]" << shopping_cart[i]->name << "		µ¥¼Û£º" << shopping_cart[i]->price << "\n";
 				i++;
 			}
-			//åˆ—å‡ºæ€»ä»·å’Œæ“ä½œå†…å®¹
-			std::cout << "æ€»å…±éœ€æ”¯ä»˜" << green << std::setprecision(2) << std::fixed << this->total_price << yellow << "å…ƒ\n" << green;
-			std::cout << "[Space]æ”¯ä»˜å½“å‰å•†å“\n[Tab]æ¸…ç©º\n[Esc]è¿”å›ä¸Šä¸€çº§\n" << white;
+			//ÁĞ³ö×Ü¼ÛºÍ²Ù×÷ÄÚÈİ
+			std::cout << "×Ü¹²ĞèÖ§¸¶" << green << std::setprecision(2) << std::fixed << this->total_price << yellow << "Ôª\n" << green;
+			std::cout << "[Space]Ö§¸¶µ±Ç°ÉÌÆ·\n[Tab]Çå¿Õ\n[Esc]·µ»ØÉÏÒ»¼¶\n" << white;
 
 
-			//æ“ä½œèœå•
+			//²Ù×÷²Ëµ¥
 			while (1){
 				input = _getch();
 				switch (input){
-				case 32://Space ä»˜æ¬¾
-					//é’±ä¸å¤Ÿ
+			
+			//Space ¸¶¿î
+				case 32:
+				//Ç®²»¹»
 					if (this->total_price > player->GetPlayerMoney()) {
-						std::cout << red << "æ‚¨æ²¡æœ‰è¶³å¤Ÿçš„é’±æ”¯ä»˜æ‚¨çš„é€‰è´­å•†å“\n";
+						std::cout << red << "ÄúÃ»ÓĞ×ã¹»µÄÇ®Ö§¸¶ÄúµÄÑ¡¹ºÉÌÆ·\n";
 						system("pause");
 						system("cls");
 						return this->IngredientMarket();
 					}
+				//¼ÓÔØ
+					std::cout << yellow << "ÕıÔÚ¸øÄã¼ÓËÙ´¦Àí£¡£¡£¡\n" << white;
+				//½áËãÓà¶î
 					player->SetPlayerMoney(player->GetPlayerMoney() - total_price);
+				//°Ñ¹ºÎï³µÖĞµÄÉÌÆ·Å²µ½±ùÏäÖĞ
+					for (int i = 0; i < shopping_cart.size();) {
+					//ÅĞ¶ÏÊÇ·ñÓ¦¸Ã½«ÄÚÈİ´æÈë»¹ÊÇÔö¼Ó´æ»õÁ¿
+						//Ìí¼Ó´æ»õÁ¿
+						if (shopping_cart[i]->possession != 0) {
+							shopping_cart[i]->possession += 1;
+							i++;
+							continue;
+						}
+						//´æÈë±ùÏä(ĞÂÔªËØ)
+						restaurant->ice_box.push_back(shopping_cart[i]);
+						shopping_cart[i]->possession += 1;
+						i++;
+					}
 					system("cls");
-					std::cout << yellow << "æ¬¢è¿ä¸‹æ¬¡å…‰ä¸´ï¼æ‚¨çš„ä½™é¢" << green << player->GetPlayerMoney() << "å…ƒ\n";
+					std::cout << yellow << "»¶Ó­ÏÂ´Î¹âÁÙ£¡ÄúµÄÓà¶î" << green << player->GetPlayerMoney() << "Ôª\n";
 					system("pause");
+				//Çå¿Õ¹ºÎï³µ
 					this->shopping_cart.clear();
 					return this->IngredientMarket();
 					break;
-
-				case 9://Tab æ¸…ç©ºè´­ç‰©è½¦
-					std::cout << yellow << "æ˜¯å¦éœ€è¦æ¸…ç©ºè´­ç‰©è½¦?\n" 
-						<< green << "[Space]æ¸…ç©ºè´­ç‰©è½¦\n[Esc]è¿”å›"  << white;
+			
+			//Tab Çå¿Õ¹ºÎï³µ
+				case 9:
+					std::cout << yellow << "ÊÇ·ñĞèÒªÇå¿Õ¹ºÎï³µ?\n" 
+						<< green << "[Space]Çå¿Õ¹ºÎï³µ\n[Esc]·µ»Ø"  << white;
 					do {
 						input = _getch();
 						if (input  == 27) {
@@ -112,8 +133,9 @@ void IngredientMarketUI::IngredientMarket() {
 					this->shopping_cart.clear();
 					return this->IngredientMarket();
 					break;
-
-				case 27://Esc
+			
+			//Esc·µ»ØÉÏÒ»¼¶
+				case 27:
 					return this->IngredientMarket();
 					break;
 
@@ -122,16 +144,16 @@ void IngredientMarketUI::IngredientMarket() {
 				}
 			}
 			break;
-		case 27://Esc   è¿”å›ä¸Šä¸€çº§
-			//æ£€æŸ¥è´­ç‰©è½¦æ˜¯å¦ä¸ºç©º
+		case 27://Esc   ·µ»ØÉÏÒ»¼¶
+			//¼ì²é¹ºÎï³µÊÇ·ñÎª¿Õ
 			if (shopping_cart.empty()) {
 				return res_weight->MainResMenu();
 			}
 			else {
-				//è´­ç‰©è½¦ä¸ä¸ºç©º
+				//¹ºÎï³µ²»Îª¿Õ
 				system("cls");
 				std::cout << yellow 
-					<< "æ‚¨çš„è´­ç‰©è½¦è¿˜æœ‰æœªä»˜æ¬¾çš„é£Ÿæå•†å“ï¼\n";
+					<< "ÄúµÄ¹ºÎï³µ»¹ÓĞÎ´¸¶¿îµÄÊ³²ÄÉÌÆ·£¡\n";
 				system("pause");
 				return this->IngredientMarket();
 			}
@@ -144,52 +166,52 @@ void IngredientMarketUI::IngredientMarket() {
 }
 ;
 void IngredientMarketUI::ShoppingCartOperator(){
-//åˆ—å‡ºè´­ç‰©è½¦æ¸…å•
-//æœ€å¤§ç¿»é¡µé‡
+//ÁĞ³ö¹ºÎï³µÇåµ¥
+//×î´ó·­Ò³Á¿
 	int pagemax = (shopping_cart.size() % 10 == 0) ? (shopping_cart.size() / 10) : ((shopping_cart.size() / 10) + 1);
-	std::cout << blue << "Pageï¼š" << green << page + 1 << "/"
+	std::cout << blue << "Page£º" << green << page + 1 << "/"
 		<< pagemax << yellow << Back;
-//é˜²æ­¢å‘é‡è¶Šç•Œï¼ˆé˜²æ­¢æ‰“å°åˆ°ç©ºå†…å®¹ï¼‰
-	int range;	//æ‰“å°æ¬¡æ•°
+//·ÀÖ¹ÏòÁ¿Ô½½ç£¨·ÀÖ¹´òÓ¡µ½¿ÕÄÚÈİ£©
+	int range;	//´òÓ¡´ÎÊı
 	if ( ( page + 1 ) * 10 > shopping_cart.size()) {
 		range = shopping_cart.size() % 10;
 	}
 	else {
 		range = 10;
 	}
-//æ‰“å°å½“å‰é¡µå•†å“
+//´òÓ¡µ±Ç°Ò³ÉÌÆ·
 	for (int i = 0; i < range;) {
-		std::cout << "[" << i << "]" << shopping_cart[page*10 + i].name << "		" 
-			      << "å•ä»·ï¼š" << shopping_cart[page*10 + i].price << Back;
+		std::cout << "[" << i << "]" << shopping_cart[page*10 + i]->name << "		" 
+			      << "µ¥¼Û£º" << shopping_cart[page*10 + i]->price << Back;
 		i++;
 	}
 	;
-//åˆ—å‡ºæ“ä½œæç¤º
+//ÁĞ³ö²Ù×÷ÌáÊ¾
 	std::cout << green
-		<< "é€‰æ‹©å½“å‰åˆ—è¡¨å•†å“å‰çš„åºæ•°ä»è´­ç‰©è½¦ä¸­ç§»é™¤\n[Q]/[E]å‘å‰/å‘åç¿»é¡µ\n"
-		<< "[Esc]è¿”å›ä¸Šä¸€çº§\n" << white;
+		<< "Ñ¡Ôñµ±Ç°ÁĞ±íÉÌÆ·Ç°µÄĞòÊı´Ó¹ºÎï³µÖĞÒÆ³ı\n[Q]/[E]ÏòÇ°/Ïòºó·­Ò³\n"
+		<< "[Esc]·µ»ØÉÏÒ»¼¶\n" << white;
 	;
-//ç§»é™¤æ“ä½œ
+//ÒÆ³ı²Ù×÷
 	int input = _getch();
 	if (input >= 48 && input <= 57) {
 		int choose_temp = this->page * 10 + input - 48;
-	//é˜²æ­¢å‘é‡è¶Šç•Œ
+	//·ÀÖ¹ÏòÁ¿Ô½½ç
 		if (choose_temp >= shopping_cart.size()) {
 			system("cls");
 			return this->ShoppingCartOperator();
 		}
-	//ç§»é™¤æŒ‡å®šå…ƒç´ 
-		total_price -= shopping_cart[choose_temp].price;
+	//ÒÆ³ıÖ¸¶¨ÔªËØ
+		total_price -= shopping_cart[choose_temp]->price;
 		this->shopping_cart.erase(shopping_cart.begin() + choose_temp );
-	//åˆ é™¤åè‹¥å½“å‰é¡µå…ƒç´ å®Œå…¨è¢«åˆ é™¤ï¼Œåˆ™å‘å‰è‡ªåŠ¨ç¿»é¡µ
+	//É¾³ıºóÈôµ±Ç°Ò³ÔªËØÍêÈ«±»É¾³ı£¬ÔòÏòÇ°×Ô¶¯·­Ò³
 		if (shopping_cart.size() <= page * 10 && page > 0) {
 			page--;
 		}
-	//åˆ é™¤å®Œå…ƒç´ åè‹¥è´­ç‰©è½¦è¢«æ¸…ç©ºï¼Œåˆ™è¿”å›åˆ°ä¸Šä¸€çº§
+	//É¾³ıÍêÔªËØºóÈô¹ºÎï³µ±»Çå¿Õ£¬Ôò·µ»Øµ½ÉÏÒ»¼¶
 		else if(shopping_cart.empty())
 		{
 			system("cls");
-			std::cout << yellow << "è´­ç‰©è½¦å·²è¢«æ¸…ç©ºï¼Œå†å»åˆ«çš„åœ°æ–¹ç§ç§å§!\n" << white;
+			std::cout << yellow << "¹ºÎï³µÒÑ±»Çå¿Õ£¬ÔÙÈ¥±ğµÄµØ·½ÇÆÇÆ°É!\n" << white;
 			system("pause");
 			system("cls");
 			return this->IngredientMarket();
@@ -197,11 +219,11 @@ void IngredientMarketUI::ShoppingCartOperator(){
 		system("cls");
 		return this->ShoppingCartOperator();
 	}
-//ç¿»é¡µä¸è¿”å›
+//·­Ò³Óë·µ»Ø
 	switch (input) {
-	case 101:		//[E]å‘åç¿»é¡µ
-	//æ£€æŸ¥æ˜¯å¦è¶Šç•Œ
-		if ((page + 1) * 10 > shopping_cart.size()) {
+	case 101:		//[E]Ïòºó·­Ò³
+	//¼ì²éÊÇ·ñÔ½½ç
+		if ((page + 1) * 10 >= shopping_cart.size()) {
 			system("cls");
 			return this->ShoppingCartOperator();
 		}
@@ -209,7 +231,7 @@ void IngredientMarketUI::ShoppingCartOperator(){
 		system("cls");
 		return this->ShoppingCartOperator();
 		break;
-	case 113:		//[Q]å‘å‰ç¿»é¡µ
+	case 113:		//[Q]ÏòÇ°·­Ò³
 		if (page - 1 < 0) {
 			page = 0;
 			system("cls");
@@ -220,7 +242,7 @@ void IngredientMarketUI::ShoppingCartOperator(){
 		return this->ShoppingCartOperator();
 		break;
 	case 27:		//[Esc]
-		this->page = 0;	//é‡ç½®é¡µæ•°
+		this->page = 0;	//ÖØÖÃÒ³Êı
 		return this->IngredientMarket();
 		break;
 	default:
@@ -228,50 +250,50 @@ void IngredientMarketUI::ShoppingCartOperator(){
 	}
 }
 ;
-//ç¼ºä¸€ä¸ªæ£€ç´¢åŠŸèƒ½
-void IngredientMarketUI::ChooseSomeIngredient(std::vector<ingredient>&vec){
+//È±Ò»¸ö¼ìË÷¹¦ÄÜ
+void IngredientMarketUI::ChooseSomeIngredient(std::vector<ingredient*>&vec){
 	std::cout << blue << "Page:" << green << this->page + 1 << yellow << Back;
-//åˆ—å‡ºå½“å‰é¡µé£Ÿæ
+//ÁĞ³öµ±Ç°Ò³Ê³²Ä
 	for (int i = 0; i < vec.size();) {
-		std::cout << "[" << i << "]" << vec[i].name << "		" << "å•ä»·ï¼š" << vec[i].price << Back;
+		std::cout << "[" << i << "]" << vec[i]->name << "		" << "µ¥¼Û£º" << vec[i]->price << Back;
 		i++;
 	}
-//åˆ—å‡ºæ“ä½œ
+//ÁĞ³ö²Ù×÷
 	std::cout << green 
-		<< "é€‰æ‹©å•†å“å‰çš„åºæ•°æ·»åŠ è‡³è´­ç‰©è½¦\n[Q]/[E]å‘å‰/å‘åç¿»é¡µ\n"
-		<< "[Esc]è¿”å›ä¸Šä¸€çº§\n" << white;
+		<< "Ñ¡ÔñÉÌÆ·Ç°µÄĞòÊıÌí¼ÓÖÁ¹ºÎï³µ\n[Q]/[E]ÏòÇ°/Ïòºó·­Ò³\n"
+		<< "[Esc]·µ»ØÉÏÒ»¼¶\n" << white;
 
 
 	while (1){
 		int input = _getch();
-	//é€‰ä¸­å•†å“
+	//Ñ¡ÖĞÉÌÆ·
 		if (input >= 48 && input <= 57) {
 			int choose_temp = this->page*10 + input - 48;
-		//é˜²æ­¢å‘é‡è¶Šç•Œ
+		//·ÀÖ¹ÏòÁ¿Ô½½ç
 			if (choose_temp >= vec.size()) {
 				continue;
 			}
-		//å­˜å…¥è´­ç‰©è½¦
-			total_price += vec[choose_temp].price;
+		//´æÈë¹ºÎï³µ
+			total_price += vec[choose_temp]->price;
 			shopping_cart.push_back(vec[choose_temp]);
 			system("cls");
-			std::cout << yellow << "å·²å°†" << green << vec[choose_temp].name
-				<< yellow << "*1 æ·»åŠ è¿›è´­ç‰©è½¦ä¸­" << white << Back;
+			std::cout << yellow << "ÒÑ½«" << green << vec[choose_temp]->name
+				<< yellow << "*1 Ìí¼Ó½ø¹ºÎï³µÖĞ" << white << Back;
 			return this->ChooseSomeIngredient(vec);
 		}
 
 
-	//å…¶å®ƒæ“ä½œ
+	//ÆäËü²Ù×÷
 		switch (input){
-		case 101://[E]å‘åç¿»é¡µ
-		//æ£€æŸ¥æ˜¯å¦è¶Šç•Œ
+		case 101://[E]Ïòºó·­Ò³
+		//¼ì²éÊÇ·ñÔ½½ç
 			if ( (page + 1) * 10 > vec.size()) {
 				continue;
 			}
 			page += 1;
 			break;
-		case 113://[Q]å‘å‰ç¿»é¡µ
-		//é¡µæ•°ä¸èƒ½å°äºé›¶
+		case 113://[Q]ÏòÇ°·­Ò³
+		//Ò³Êı²»ÄÜĞ¡ÓÚÁã
 			if (page - 1 < 0) {
 				page = 0;
 				continue;
@@ -281,7 +303,7 @@ void IngredientMarketUI::ChooseSomeIngredient(std::vector<ingredient>&vec){
 			return this->ChooseSomeIngredient(vec);
 			break;
 		case 27://[Esc]
-			this->page = 0;	//é‡ç½®é¡µæ•°
+			this->page = 0;	//ÖØÖÃÒ³Êı
 			return this->IngredientMarket();
 			break;
 		default:

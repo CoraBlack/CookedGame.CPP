@@ -1,5 +1,9 @@
 //声明全局变量和函数的区块
 //用于供其它文件引用
+
+#ifndef STATEMENT_H
+#define STATEMENT_H
+//头文件
 #include<iostream>
 #include<string>
 #include<thread>
@@ -13,9 +17,8 @@
 #include"Restaurant.h"
 #include"RestaurantUI.h"
 #include "IngredientMarketUI.h"
-#ifndef STATEMENT_H
-#define STATEMENT_H
-#define Back "\n"		//宏定义换行操作
+//宏定义换行操作
+#define Back "\n"		
 ;
 //字体颜色
 extern std::string red;
