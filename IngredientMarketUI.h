@@ -21,10 +21,10 @@ public:
 
 private:
 //食材
-	ingredient low_beef = { "牛肉(低级)",1,40,0 };
-	ingredient low_pork = { "猪肉(低级)",1,30,0 };
-	ingredient low_chicken = { "鸡肉(低级)",1,25,0 };
-	ingredient low_Chicken_chops = { "鸡扒(低级)",1,15,0 };
+	ingredient low_beef = { "半成品牛肉(低级)",1,40,0 };
+	ingredient low_pork = { "半成品猪肉(低级)",1,30,0 };
+	ingredient low_chicken = { "半成品鸡肉(低级)",1,25,0 };
+	ingredient low_Chicken_chops = { "半成品鸡扒(低级)",1,4,0 };
 
 	;
 	std::vector<ingredient*>vegetable;						//蔬菜类食材

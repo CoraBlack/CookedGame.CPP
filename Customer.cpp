@@ -1,39 +1,74 @@
-#include "Customer.h"
 #include"statement.h"
+#include "Customer.h"
+#include"Thread.h"
+#include <functional>  
+Thread* costrd;
 //构造函数
 Customer::Customer(){
-	//生成顾客时存入顾客
+//将自身存入顾客集
 	customers.push_back(this);
+	auto funcobj = std::bind(&Customer::RequestedMessage, &*this);
+	costrd = new Thread(funcobj);
+	return;
 }
+//析构函数
 Customer::~Customer(){
-
 	//查找自身在向量中的位置
 	for (int i = 0; i < customers.size();) {
 		if (this == customers[i]) {
-			//交换移出
-			SwapObject(customers[i], customers.back());
-			customers.pop_back();
+		//移出
+			customers.erase(customers.begin() + i);
 			return;
 		}
 		i++;
 	}
 	std::cerr << red << "（顾客）找不到在向量中的位置" << white;
+	system("pause");
 	return;
 }
-void Customer::SwapObject(Customer* cos1, Customer* cos2){
-	Customer cos_temp = *cos1;	//临时存值
-	//交换值(所指内存地址不变)
-	*cos2 = *cos1;				
-	*cos1 = cos_temp;
+;
+float Customer::GetPayAmount() { return pay_amount; }
+;
+void Customer::SetPayAmount(float set) { pay_amount = set; return; }
+;
+void Customer::RequestedMessage(){
+//为顾客添加需求
+	for (int i = 0; i < Random(1, 3);) {
+	//随机需求
+		needs.push_back(restaurant->all_cuisine[Random(0, restaurant->all_cuisine.size() - 1)]);
+		i++;
+	}
+	std::cout << yellow << "Message:" << green << "新的顾客!\n";
+	//进入等待状态
+	return this->Waitting();
+}
+;
+void Customer::Waitting(){
+//for循环中每0.1秒检测一次
+	int time = Random(wait_time_min, wait_time_max) / 100;
+	for (int i = 0; i < time;) {
+//尝试上锁已判断能否暂停函数
+		//临时上锁
+		costrd->mtx.lock();
+		costrd->mtx.unlock();
+	//顾客订单完成后
+		if (needsstate) {
+		//增加营业额
+			restaurant->SetTurnover(restaurant->GetTurnover() + pay_amount);
+		//销毁对象
+			delete this;
+			return;
+		}
+	//顾客订单在计时内未完成
+		i++;
+	}
+//循环结束未跳出，意味未按时完成订单
+	//发送订单失败信息
+	std::cout << yellow << "\nMessage:您的手脚太慢了，有一位顾客已经离开\n" << white;
+	//扣除营业额
+	restaurant->SetTurnover(restaurant->GetTurnover() - pay_amount);
+	//销毁对象
+	delete this;
 	return;
-}
-
-void Customer::Count(){
-}
-
-void Customer::Enter(){
-}
-
-void Customer::Leave(){
 }
 

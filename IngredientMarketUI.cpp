@@ -144,10 +144,11 @@ void IngredientMarketUI::IngredientMarket() {
 				}
 			}
 			break;
+			;
 		case 27://Esc   返回上一级
 			//检查购物车是否为空
 			if (shopping_cart.empty()) {
-				return res_weight->MainResMenu();
+				return;
 			}
 			else {
 				//购物车不为空
