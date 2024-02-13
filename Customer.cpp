@@ -2,11 +2,11 @@
 #include "Customer.h"
 #include"Thread.h"
 #include <functional>  
-Thread* costrd;
 //构造函数
 Customer::Customer(){
 //将自身存入顾客集
 	customers.push_back(this);
+	//函数对象
 	auto funcobj = std::bind(&Customer::RequestedMessage, &*this);
 	costrd = new Thread(funcobj);
 	return;
@@ -47,6 +47,7 @@ void Customer::Waitting(){
 //for循环中每0.1秒检测一次
 	int time = Random(wait_time_min, wait_time_max) / 100;
 	for (int i = 0; i < time;) {
+		Sleep(100);
 //尝试上锁已判断能否暂停函数
 		//临时上锁
 		costrd->mtx.lock();

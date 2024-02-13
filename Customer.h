@@ -2,6 +2,7 @@
 #ifndef COSTOMER_H
 #define COSTOMER_H
 #include"Restaurant.h"
+#include"Thread.h"
 class Customer
 {
 public:
@@ -27,7 +28,7 @@ public:
 	//获取顾客需求状态
 	inline bool GetNeedsState() { return needsstate; };
 private:
-	//Thread* costrd;
+	Thread* costrd;									//线程
 	int wait_time_min = 180'000;					//默认是三分钟(千分之一秒为单位)
 	int wait_time_max = 300'000;					//默认是五分钟(千分之一秒为单位)
 	std::vector<cuisine>needs;						//顾客的订单需求

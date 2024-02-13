@@ -2,6 +2,7 @@
 #include"statement.h"
 #include"conio.h"
 void RestaurantUI::MainResMenu() {
+	std::thread* trd;	//创建顾客的线程定义
 	system("cls");
 	std::cout << yellow << "您接下来要做什么?[您的餐馆处于" << blue << "关门" << yellow << "状态]" << Back;
 	std::cout << green << "[Tab]出摊出摊!!!\n[1]食材市场\n[2]去冰箱看看\n" << white;
@@ -11,8 +12,13 @@ void RestaurantUI::MainResMenu() {
 		switch (input) {
 	//[Tab]开门营业
 		case 9:
+		//新建后台顾客线程
+			trd = new std::thread(CreateCustomer);
+		//挂入后台
+			trd->detach();
+		//设置营业状态
 			restaurant->SetOpenState(1);
-			//切换至开门的营业界面
+		//切换至开门的营业界面
 			system("cls");
 			this->ResOpenMenu();
 			return this->MainResMenu();
@@ -47,6 +53,12 @@ void RestaurantUI::ResOpenMenu(){
 	//[Tab]收摊
 		case 9:
 			restaurant->SetOpenState(0);
+			if(!customers.empty()){
+				std::cout << yellow << "您还有客人未离开!\n" << white;
+			//初始化输入值
+				input = 0;
+				continue;
+			}
 			return;
 			break;
 			;

@@ -43,7 +43,8 @@ void MainGui::GameStart() {
 			break;
 		case 27://Esc
 			system("cls");
-			PauseMenu();
+			SettingMenu();
+			return GameStart();
 			break;
 		default:
 			break;
@@ -59,6 +60,7 @@ void MainGui::ReadSaveFlie() {
 	if (save_name == "") {//防止为空
 		system("cls");
 		std::cerr << red << "存档名称不能为空！！！" << white << Back;
+		system("pause");
 		return ReadSaveFlie();
 	}
 	else if (save_name == "Exit") {//输入Exit时
@@ -84,7 +86,6 @@ void MainGui::ReadSaveFlie() {
 		save_name = "";//重置
 		return this->GameStart();
 	}
-	;
 	;
 //读档过程
 
@@ -142,15 +143,15 @@ void MainGui::CreateNewSave() {
 //检查是否已存在该存档
 	std::fstream savefile(save_name);
 	if (savefile.good()) {
-		//检测到重名文件(有bug目前)
+	//检测到重名文件(有bug目前)
 		std::cerr << yellow << "Warning:检测到存档文件已存在，是否继续创建？\n" 
 				  << green << "[Space]继续\n[Esc]返回\n" << white;
 		int input = 0;
-		//输入为Space时继续
+	//输入为Space时继续
 		do {
 			input = _getch();
 			if (input == 27) {
-				//输入ESC时重新创建
+			//输入ESC时重新创建
 				system("cls");
 				return this->GameStart();
 			}
@@ -184,6 +185,7 @@ void MainGui::CreateNewSave() {
 	return this->NewGame();
 
 }
+;
 void MainGui::Help(){
 	int input = 0;
 	while (1) {

@@ -3,11 +3,11 @@
 #define THREAD_H
 #include<thread>
 #include<mutex>
-#include"Customer.h"
 #include <functional> 
 class Thread{
 public:
-	std::mutex mtx;									//线程锁，用于暂停线程函数
+	std::mutex mtx;									//线程锁，用于暂停自身线程
+
 	Thread(std::function <void()> func);			//构造函数，构造后台线程
 	std::thread::id GetThreadID();					//获取线程的ID
 	void PauseThread();								//暂停线程
