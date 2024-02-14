@@ -2,7 +2,6 @@
 #include"statement.h"
 #include"conio.h"
 void RestaurantUI::MainResMenu() {
-	std::thread* trd;	//创建顾客的线程定义
 	system("cls");
 	std::cout << yellow << "您接下来要做什么?[您的餐馆处于" << blue << "关门" << yellow << "状态]" << Back;
 	std::cout << green << "[Tab]出摊出摊!!!\n[1]食材市场\n[2]去冰箱看看\n" << white;
@@ -13,9 +12,11 @@ void RestaurantUI::MainResMenu() {
 	//[Tab]开门营业
 		case 9:
 		//新建后台顾客线程
-			trd = new std::thread(CreateCustomer);
-		//挂入后台
-			trd->detach();
+			//检测线程是否已存在
+			if (createtrd == nullptr) {
+				createtrd = nullptr;
+				createtrd = new Thread(CreateCustomer);
+			}
 		//设置营业状态
 			restaurant->SetOpenState(1);
 		//切换至开门的营业界面
@@ -45,21 +46,45 @@ void RestaurantUI::MainResMenu() {
 ;
 void RestaurantUI::ResOpenMenu(){
 	std::cout << blue << "Do it!顾客,正在源源不断向你进军!!!\n" << green
-			  << "[Tab]收摊\n[F]制作美食\n" << white;
+			  << "[Tab]切换营业状态\n[F]制作美食\n[Esc]暂停游戏\n" << white;
 	int input = 0;
 	while (1){
 		input = _getch();
 		switch (input) {
 	//[Tab]收摊
 		case 9:
-			restaurant->SetOpenState(0);
-			if(!customers.empty()){
-				std::cout << yellow << "您还有客人未离开!\n" << white;
-			//初始化输入值
-				input = 0;
+		//营业状态当前为营业时
+			if (restaurant->GetOpenState()) {
+			//设置为停止营业
+				restaurant->SetOpenState(0);
+			//顾客未清空
+				if (!customers.empty()) {
+					std::cout << yellow << "您还有客人未离开!我们已经调整营业状态为停止，等待客人全部离开\n" << white;
+					//初始化输入值
+					input = 0;
+				//重复循环
+					continue;
+				}
+			//顾客已清空
+				//清空线程集
+				for (int i = 0; i < threads.size();) {
+					delete threads[i];
+					i++;
+				}
+				return;
+			}
+
+		//营业状态为停止营业时
+			//设置状态为营业
+			restaurant->SetOpenState(1);
+		//启动顾客生成程序
+			//检测生成程序已经存在
+			if (createtrd != nullptr) {	
 				continue;
 			}
-			return;
+			//生成程序线程指针为空,重新生成
+			createtrd = nullptr;
+			createtrd = new Thread(CreateCustomer);
 			break;
 			;
 	//[F]制作美食
@@ -67,15 +92,18 @@ void RestaurantUI::ResOpenMenu(){
 
 			break;
 			;
-/*
-	//[2]移到后厨
-		case 50:
-			system("cls");
-			this->KitchenUI();
-			return this->ResOpenMenu();
+	//[Esc]
+		case 27:
+		//游戏正在运行
+			if (!pausestate){
+				PauseGame();
+			}
+			else {
+		//游戏已暂停
+				ResumeGame();
+			}
 			break;
 			;
-*/
 		default:
 			break;
 		}

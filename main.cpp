@@ -24,6 +24,7 @@ std::vector<Customer*>customers
 std::vector<cuisine>all_cuisine;			//全部菜肴
 ;
 //关于多线程
+Thread* createtrd = nullptr;			    //用于创建顾客新对象的专用线程对象
 std::mutex* mtx_pause = nullptr;            //初始化线程锁
 std::vector<Thread*>threads;
 //存档名称
@@ -108,48 +109,39 @@ void Test() {
     }
 }
 ;
-void AllPause(){
+void PauseGame(){
 //对全局锁上锁
     //分配内存
     mtx_pause = nullptr;
     mtx_pause = new std::mutex;
-    mtx_pause->lock();
-    
-    
-    /*
-//对子线程上锁
-    if (!threads.empty()) {
-        for (int i = 0; i < threads.size();) {
-            threads[i]->mtx.lock();
-            i++;
-        }
+    if (mtx_pause->try_lock()) {
+        //上锁成功，通告暂停
+        pausestate = 1;
+        std::cout << yellow << "Message:游戏已经暂停\n" << white;
     }
-    */
-
-
-//通告暂停
-    std::cout << yellow << "\n游戏已经暂停\n" << white;
-//等待解锁(每0.1s检测一次)
-    while (pausestate) { Sleep(100); }
-//暂停取消后越过循环
-    
-
-    /*
-//解锁子线程锁
-    if (!threads.empty()) {
-        for (int i = 0; i < threads.size();) {
-            threads[i]->mtx.unlock();
-            i++;
-        }
+    else {
+        //失败
+        std::cerr << yellow << "Warning:游戏暂停失败，可能游戏已经暂停\n" << white;
     }
-    */
-
-
-//全局锁解锁
-    mtx_pause->unlock();
-    //释放内存
+    return;
+}
+;
+void ResumeGame() {
+//锁已经锁上
+    if (!mtx_pause->try_lock()) {
+        mtx_pause->unlock();
+        pausestate = 0;
+        std::cout << yellow << "Message:游戏以恢复\n" << white;
+    }
+    //失败
+    else {
+        std::cerr << yellow << "Warning:游戏似乎已经解除暂停，现在尝试重新解除暂停\n" << white;
+        mtx_pause->unlock();
+        pausestate = 0;
+    }
+//释放内存并初始化
     delete mtx_pause;
-    std::cout << yellow << "游戏已回复\n" << white;
+    mtx_pause = nullptr;
     return;
 }
 ;
@@ -219,4 +211,21 @@ void CreateCustomer() {
         while (!customers.empty()) { }
         break;
     }
+}
+
+void DeleteCustomer(Customer* cusptr/*销毁的对象*/) {
+    //查找自身在向量中的位置
+    for (int i = 0; i < customers.size();) {
+        if (cusptr == customers[i]) {
+            //移出
+            customers.erase(customers.begin() + i);
+            break;
+        }
+        i++;
+    }
+    //销毁顾客对象的后台线程
+    delete cusptr;
+    //防止悬空
+    cusptr = nullptr;
+    return;
 }
