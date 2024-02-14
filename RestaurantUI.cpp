@@ -2,82 +2,96 @@
 #include"statement.h"
 #include"conio.h"
 void RestaurantUI::MainResMenu() {
+	std::thread* trd;	//创建顾客的线程定义
 	system("cls");
 	std::cout << yellow << "您接下来要做什么?[您的餐馆处于" << blue << "关门" << yellow << "状态]" << Back;
-	std::cout << green << "[Tab]开店\n[1]食材市场\n[2]店面布设\n" << white;
+	std::cout << green << "[Tab]出摊出摊!!!\n[1]食材市场\n[2]去冰箱看看\n" << white;
 	//选项
 	while (1) {
 		int input = _getch();
 		switch (input) {
-
-		case 9://Tab
+	//[Tab]开门营业
+		case 9:
+		//新建后台顾客线程
+			trd = new std::thread(CreateCustomer);
+		//挂入后台
+			trd->detach();
+		//设置营业状态
 			restaurant->SetOpenState(1);
-			//切换至开门的营业界面
+		//切换至开门的营业界面
 			system("cls");
 			this->ResOpenMenu();
 			return this->MainResMenu();
 			break;
-
-		case 49://1
+			;
+	//[1]食材市场
+		case 49:
 			market_weight->IngredientMarket();
+			return this->MainResMenu();
 			break;
-
-		case 50://2
-
+			;
+	//[2]看看冰箱
+		case 50:
+			this->IceBoxUI(0);
+			return this->MainResMenu();
 			break;
-
+			;
 		default:
 			break;
 		}
 	}
+	return;
 }
+;
 void RestaurantUI::ResOpenMenu(){
-	std::cout << blue << "Do it!\n" << green
-			  << "[Tab]停止营业\n[1]餐桌\n[2]后厨\n" << white;
+	std::cout << blue << "Do it!顾客,正在源源不断向你进军!!!\n" << green
+			  << "[Tab]收摊\n[F]制作美食\n" << white;
 	int input = 0;
 	while (1){
 		input = _getch();
 		switch (input) {
-		//[Tab]停止营业
+	//[Tab]收摊
 		case 9:
 			restaurant->SetOpenState(0);
+			if(!customers.empty()){
+				std::cout << yellow << "您还有客人未离开!\n" << white;
+			//初始化输入值
+				input = 0;
+				continue;
+			}
 			return;
 			break;
 			;
-		//[1]移到餐桌
-		case 49:
+	//[F]制作美食
+		case 102:
 
 			break;
 			;
-		//[2]移到后厨
+/*
+	//[2]移到后厨
 		case 50:
 			system("cls");
 			this->KitchenUI();
 			return this->ResOpenMenu();
 			break;
 			;
+*/
 		default:
 			break;
 		}
 	}
 }
 ;
+/*
 void RestaurantUI::KitchenUI(){
 	system("cls");
 	std::cout << yellow << "你需要做什么？\n" << green
-			  << "[Tab]停止营业\n[Esc]离开后厨\n[1]烹饪\n[2]冰箱\n" << white;
+			  << "[Esc]离开后厨\n[1]烹饪\n[2]冰箱\n" << white;
 //冰箱的存货翻页数量
 	while (1){
 	//输入操作
 		int input = _getch();
 		switch (input){
-	//Tab 停止营业
-		case 9:
-			restaurant->SetOpenState(0);
-			system("cls");
-			return;	//返回上一级（关门界面）
-			break;
-			;
 	//[Esc] 离开后厨
 		case 27:
 			system("cls");
@@ -86,7 +100,14 @@ void RestaurantUI::KitchenUI(){
 			;
 	//[1]烹饪
 		case 49:
-
+		//停止营业不给煮饭
+			if (!restaurant->GetOpenState()) {
+				std::cout << yellow << "现在好像还没有开门吧(-_-)……\n";
+				system("pause");
+				system("cls");
+				return KitchenUI();
+			}
+		
 			break;
 			;
 	//[2]冰箱
@@ -102,13 +123,14 @@ void RestaurantUI::KitchenUI(){
 		}
 	}
 }
+*/
 void RestaurantUI::IceBoxUI(int page){//page为当前页，0为第一页
 //冰箱空空如也？
 	if (restaurant->ice_box.empty() && player->hand.empty()) {
 		std::cout << yellow << "冰箱空空如也(T_T)……\n" << white;
 		system("pause");
 		system("cls");
-		return this->KitchenUI();
+		return;
 	}
 //打印冰箱中的全部食材
 	//设置一下最大页数
@@ -250,5 +272,8 @@ void RestaurantUI::IceBoxUI(int page){//page为当前页，0为第一页
 			break;
 		}
 	}
+}
+void RestaurantUI::CookedUI(){
+
 }
 ;

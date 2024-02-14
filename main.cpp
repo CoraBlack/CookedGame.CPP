@@ -1,36 +1,38 @@
-ï»¿//ä¸»å‡½æ•°
+//Ö÷º¯Êı
 #include <iostream>
 #include"statement.h"
 #include<Windows.h>
 #include<thread>
 using namespace std;
-//å­—ä½“é¢œè‰²
+//×ÖÌåÑÕÉ«
 std::string red = "\033[31m";
 std::string green = "\033[32m";
 std::string yellow = "\033[33m";
 std::string white = "\033[0m";
 std::string blue = "\033[36m";
 ;
-//statement.hä¸­å…¨å±€å˜é‡çš„å®šä¹‰åŒºï¼ˆé˜²æ­¢é“¾æ¥å™¨é”™è¯¯ï¼‰
-bool initalize_state = 0;               //é»˜è®¤åˆå§‹åŒ–çŠ¶æ€ä¸ºå¦
-bool autosave_state = 1;				//é»˜è®¤å¼€å¯è‡ªåŠ¨å­˜æ¡£
-unsigned int autosave_time = 300'000;	//é»˜è®¤è‡ªåŠ¨å­˜æ¡£æ—¶é—´äº”åˆ†é’Ÿ
+//statement.hÖĞÈ«¾Ö±äÁ¿µÄ¶¨ÒåÇø£¨·ÀÖ¹Á´½ÓÆ÷´íÎó£©
+bool pausestate = 0;                    //ÓÎÏ·ÔİÍ£×´Ì¬
+bool initalize_state = 0;               //Ä¬ÈÏ³õÊ¼»¯×´Ì¬Îª·ñ
+bool autosave_state = 1;				//Ä¬ÈÏ¿ªÆô×Ô¶¯´æµµ
+unsigned int autosave_time = 300'000;	//Ä¬ÈÏ×Ô¶¯´æµµÊ±¼äÎå·ÖÖÓ
 
-//é¡¾å®¢é›†åˆ
+//¹Ë¿Í¼¯ºÏ
 std::vector<Customer*>customers
 ;
-//èœè‚´
-std::vector<cuisine>all_cuisine;			//å…¨éƒ¨èœè‚´
+//²ËëÈ
+std::vector<cuisine>all_cuisine;			//È«²¿²ËëÈ
 ;
-//çº¿ç¨‹ç»„
-std::vector<Thread>threads;
-//å­˜æ¡£åç§°
+//¹ØÓÚ¶àÏß³Ì
+std::mutex* mtx_pause = nullptr;            //³õÊ¼»¯Ïß³ÌËø
+std::vector<Thread*>threads;
+//´æµµÃû³Æ
 std::string save_name = "";
-//ç”¨äºæ£€æµ‹æ–‡ä»¶ä¸ºå­˜æ¡£æ–‡ä»¶çš„æ ‡è¯†ç¬¦
+//ÓÃÓÚ¼ì²âÎÄ¼şÎª´æµµÎÄ¼şµÄ±êÊ¶·û
 const char* checkword = "CheckSave114514";
 int (*fucptr) ();
 ;
-//å¯¹è±¡å®ä¾‹åŒ–åŒº
+//¶ÔÏóÊµÀı»¯Çø
 Player* player = new Player();
 Restaurant* restaurant = new Restaurant();
 RestaurantUI* res_weight = new RestaurantUI();
@@ -38,44 +40,57 @@ IngredientMarketUI* market_weight = new IngredientMarketUI();
 ;
 ;
 ;
-//ä¸»å‡½æ•°
+//Ö÷º¯Êı
 int main(){
-    thread initialize_td(Initialize);//åˆ›å»ºä¸€æ¡çº¿ç¨‹ç”¨äºå¤„ç†åˆå§‹åŒ–å†…å®¹
-    initialize_td.detach();//å°†åˆå§‹åŒ–è¿›ç¨‹åå°å¤„ç†
-    //å¼€åœºæ–‡å­—ï¼ˆè°ƒè¯•å…ˆå±è”½ï¼‰
-    /*
-    cout << yellow << "Warningï¼š\n" << white << "æœ¬æ¸¸æˆä»…èƒ½åœ¨Windowså¹³å°ä¸Šè¿è¡Œï¼Œä¸”ç‰ˆæœ¬ä¸ä½äºWin10ï¼Œæœ›å‘¨çŸ¥ï¼\n";
-    system("pause");
+    thread initialize_td(Initialize);//´´½¨Ò»ÌõÏß³ÌÓÃÓÚ´¦Àí³õÊ¼»¯ÄÚÈİ
+    initialize_td.detach();//½«³õÊ¼»¯½ø³ÌºóÌ¨´¦Àí
+    //¿ª³¡ÎÄ×Ö£¨µ÷ÊÔÏÈÆÁ±Î£©
+//È·¶¨ÔËĞĞ»·¾³
+    cout << yellow << "Warning:\n" << white 
+        << "±¾ÓÎÏ·½öÄÜÔÚWindowsÆ½Ì¨ÉÏÔËĞĞ£¬ÎªÈ·±£²Ê×ÖÄÜ¹»Õı³£ÔËĞĞ£¬ÇëÈ·±£ÏµÍ³ÔÚWin10ÒÔÉÏ\n"
+        <<"ÈôÄúµÄWindows°æ±¾²»Âú×ãĞèÇó£¬Äú¿ÉÒÔ°´ÏÂ[Tab]À´ÆÁ±ÎËùÓĞ²Ê×Ö£¬À´È·±£ÓÎÏ·µÄÕı³£ÔËĞĞ\n"
+        <<"ÈôÄúµÄWindows°æ±¾ÄÜÕı³£ÔËĞĞ£¬Çë°´ÏÂ¼üÅÌÉÏÆäËü¼üÒÔÕı³£¼ÌĞøÓÎÏ·\n";
+//ÆÁ±Î²Ê×Ö    
+    if (_getch() == 9) {
+        red = "";
+        yellow = "";
+        green = "";
+        white = "";
+        blue = "";
+        std::cout << "²Ê×ÖÒÑÆÁ±Î!";
+        system("cls");
+    }
     ;
+    /*
     PrintVerbatim("Hello,Dear Player!\nI am so proud of that you can play my game");
-    PrintVerbatim("å…è®¸æˆ‘ä»‹ç»ä¸€è¾¹è‡ªå·±ï¼š\nCoca Cora");
+    PrintVerbatim("ÔÊĞíÎÒ½éÉÜÒ»±ß×Ô¼º£º\nCoca Cora");
     Sleep(1000);
     PrintVerbatim("and my good friend AF!!!!!!!!\nWell have a good time!!!");
     system("pause");
     system("cls");
     */
     ;
-    //ä¸»æµç¨‹å…¥å£å‡½æ•°(æµç¨‹æ‰˜ç®¡)
+    //Ö÷Á÷³ÌÈë¿Úº¯Êı(Á÷³ÌÍĞ¹Ü)
     MainGui* main_weight = new MainGui;
     main_weight->GameStart();
     // 
     // 
     // 
     // 
-    //äº¤æ¥æµ‹è¯•é€šé“
+    //½»½Ó²âÊÔÍ¨µÀ
     //Test();
     return 0;
 }
 ;
 ;
 ;
-//å…¨å±€å‡½æ•°å®šä¹‰åŒº
-//æµ‹è¯•é€šé“
+//È«¾Öº¯Êı¶¨ÒåÇø
+//²âÊÔÍ¨µÀ
 void Test() {
-    //æ–¹ä¾¿æµ‹è¯•æ‰æ•²å¾—
+    //·½±ã²âÊÔ²ÅÇÃµÃ
     using namespace std;
 
-    //æµ‹è¯•éšæœºæ•°å¼•æ“
+    //²âÊÔËæ»úÊıÒıÇæ
    //cout << Random(1, 100);
     ;
     /*
@@ -87,58 +102,81 @@ void Test() {
     system("pause");
     */
     ;
-    //æµ‹è¯•é”®ç›˜è¾“å…¥
+    //²âÊÔ¼üÅÌÊäÈë
     while (1) {
         cout << _getch() << "\n";
     }
 }
 ;
-void PauseMenu() {
-//æ‰“å°æ“ä½œåˆ—è¡¨
-    std::cout << green << "[Esc]è¿”å›\n[Tab]è®¾ç½®\n[Back]é€€å‡ºæ¸¸æˆ\n";
-    while (1) {
-        int input = _getch();
-        switch (input) {
-        case 9://Tab
-            return;
-            break;
-        case 27://Esc
-
-            break;
-        case 8://Back
-
-            break;
-        default:
-            break;
+void AllPause(){
+//¶ÔÈ«¾ÖËøÉÏËø
+    //·ÖÅäÄÚ´æ
+    mtx_pause = nullptr;
+    mtx_pause = new std::mutex;
+    mtx_pause->lock();
+    
+    
+    /*
+//¶Ô×ÓÏß³ÌÉÏËø
+    if (!threads.empty()) {
+        for (int i = 0; i < threads.size();) {
+            threads[i]->mtx.lock();
+            i++;
         }
     }
+    */
+
+
+//Í¨¸æÔİÍ£
+    std::cout << yellow << "\nÓÎÏ·ÒÑ¾­ÔİÍ£\n" << white;
+//µÈ´ı½âËø(Ã¿0.1s¼ì²âÒ»´Î)
+    while (pausestate) { Sleep(100); }
+//ÔİÍ£È¡ÏûºóÔ½¹ıÑ­»·
+    
+
+    /*
+//½âËø×ÓÏß³ÌËø
+    if (!threads.empty()) {
+        for (int i = 0; i < threads.size();) {
+            threads[i]->mtx.unlock();
+            i++;
+        }
+    }
+    */
+
+
+//È«¾ÖËø½âËø
+    mtx_pause->unlock();
+    //ÊÍ·ÅÄÚ´æ
+    delete mtx_pause;
+    std::cout << yellow << "ÓÎÏ·ÒÑ»Ø¸´\n" << white;
+    return;
 }
 ;
 void SettingMenu() {
-
+    std::cout << yellow << "ÉĞÎ´¿ª·¢" << white;
+    system("pause");
+    return;
 }
 ;
-
-
-
-void AutoSave(bool mode /* æ‰‹åŠ¨å­˜æ¡£(0) è¿˜æ˜¯ è‡ªåŠ¨å­˜æ¡£(1) */) {
-    //è‡ªåŠ¨å­˜æ¡£æ¨¡å¼
+void AutoSave(bool mode /* ÊÖ¶¯´æµµ(0) »¹ÊÇ ×Ô¶¯´æµµ(1) */) {
+    //×Ô¶¯´æµµÄ£Ê½
     if (mode) {
-        //æ˜¯å¦å¼€å¯è‡ªåŠ¨å­˜æ¡£
+        //ÊÇ·ñ¿ªÆô×Ô¶¯´æµµ
         if (autosave_state) {
-            //ä¼‘çœ ï¼Œç­‰å¾…å­˜æ¡£
+            //ĞİÃß£¬µÈ´ı´æµµ
             Sleep(autosave_time);
 
         }
     }
-    //æ‰‹åŠ¨å­˜æ¡£
-    //å­˜æ¡£ä¸»ä½“æµç¨‹ï¼ˆå…±ç”¨ï¼‰
+    //ÊÖ¶¯´æµµ
+    //´æµµÖ÷ÌåÁ÷³Ì£¨¹²ÓÃ£©
 }
 ;
 void Initialize() {
-    //è®¾ç½®åˆå§‹åŒ–çŠ¶æ€
+    //ÉèÖÃ³õÊ¼»¯×´Ì¬
     initalize_state = 1;
-    //æµ‹è¯•ç”¨æ–‡å­—
+    //²âÊÔÓÃÎÄ×Ö
     Sleep(1000);
 
     //std::cout << green << "Finish to initialize!" << white;
@@ -149,3 +187,36 @@ void ThreadTest() {
 
 }
 ;
+//Éú³É¹Ë¿Í
+void CreateCustomer() {
+//Éú³É¶ÔÏóµÄÑ­»·
+    while (restaurant->GetOpenState()) {
+    //Ëæ»úÈıÊ®Ãëµ½Á½·ÖÖÓ´´½¨Ò»¸ö¹Ë¿Í
+        //Sleep(Random(30'000, 120'000));
+        for (int i = 0; i < Random(300, 1200);) {
+            Sleep(100);
+        //¼ì²â¿ªÃÅ×´Ì¬
+            if (!restaurant->GetOpenState()) {
+            //¹ØÃÅÁËÌáÇ°Í£Ö¹
+                return;
+            }
+        //¼ì²âÔİÍ£×´Ì¬
+            if (pausestate) {
+            //¶ÂÈû
+                mtx_pause->lock();
+                mtx_pause->unlock();
+            }
+            i++;
+        }
+    //¼ì²â×´Ì¬ÊÇ·ñ¼ÌĞø´´½¨
+        if (restaurant->GetOpenState()) {
+            Customer* newcus = nullptr;
+            newcus = new Customer;
+            continue;
+        }
+    //²»ÔÙ´´½¨¹Ë¿Í
+        //µÈ´ı¹Ë¿ÍÇå¿Õ
+        while (!customers.empty()) { }
+        break;
+    }
+}

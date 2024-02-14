@@ -43,7 +43,8 @@ void MainGui::GameStart() {
 			break;
 		case 27://Esc
 			system("cls");
-			PauseMenu();
+			SettingMenu();
+			return GameStart();
 			break;
 		default:
 			break;
@@ -59,6 +60,7 @@ void MainGui::ReadSaveFlie() {
 	if (save_name == "") {//防止为空
 		system("cls");
 		std::cerr << red << "存档名称不能为空！！！" << white << Back;
+		system("pause");
 		return ReadSaveFlie();
 	}
 	else if (save_name == "Exit") {//输入Exit时
@@ -85,7 +87,6 @@ void MainGui::ReadSaveFlie() {
 		return this->GameStart();
 	}
 	;
-	;
 //读档过程
 
 //重置文件流
@@ -109,9 +110,15 @@ void MainGui::ReadSaveFlie() {
 }
 ;
 void MainGui::NewGame() {
-	//新游戏引入
+	system("cls");
+//打开帮助界面
+	std::cout << yellow << "在开始游戏前,您有必要看一遍游戏的帮助手册\n" << white;
+	Help();
+	std::cout << blue << "正在前往您的摊位\n" << white;
+	Loading(10);
+//新游戏引入
 
-	//转向餐厅操作界面
+//转向摊子操作界面
 	return res_weight->MainResMenu();
 }
 ;
@@ -136,15 +143,15 @@ void MainGui::CreateNewSave() {
 //检查是否已存在该存档
 	std::fstream savefile(save_name);
 	if (savefile.good()) {
-		//检测到重名文件(有bug目前)
+	//检测到重名文件(有bug目前)
 		std::cerr << yellow << "Warning:检测到存档文件已存在，是否继续创建？\n" 
 				  << green << "[Space]继续\n[Esc]返回\n" << white;
 		int input = 0;
-		//输入为Space时继续
+	//输入为Space时继续
 		do {
 			input = _getch();
 			if (input == 27) {
-				//输入ESC时重新创建
+			//输入ESC时重新创建
 				system("cls");
 				return this->GameStart();
 			}
@@ -177,5 +184,63 @@ void MainGui::CreateNewSave() {
 	}
 	return this->NewGame();
 
+}
+;
+void MainGui::Help(){
+	int input = 0;
+	while (1) {
+		std::cout << blue
+			<< "小帮手:\n" << yellow
+			<< "[1]关于摊位\n[2]关于顾客系统\n[3]关于烹饪系统\n[Esc]退出小帮手\n"
+			<< white;
+		input = _getch();
+		switch (input){
+	//[1]关于摊位的说明
+		case 49:
+			system("cls");
+			break;
+			;
+	//[2]关于顾客系统的说明
+		case 50:
+			system("cls");
+			std::cout << blue << "基本操作:\n" << white
+				<< "顾客会在不定时的来到您的摊位前，向你明确它的需求\n"
+				<< "您尽量要在最短的时间内出餐，您才可以是您的收益最大化\n"
+				<< "您需要观察什么食品的走向最好，以便您能够更好的服务顾客且不会出现食材浪费\n"
+				<< "或者不会因为食材过多导致您时间上的浪费\n"
+				<< "顾客的等待时间，也就是他们的耐心，它不会显现在您的屏幕上，你只能速度!!!\n";
+			system("pause");
+			system("cls");
+			break;
+			break;
+			;
+	//[3]烹饪系统的说明
+		case 51:
+			system("cls");
+			std::cout << blue << "基本操作:\n"
+				<< white << "您需要带上您的食材，放在你的小摊子里出摊\n"
+				<<"您要慎重考虑您应该带什么，以应对不同顾客的需求\n"
+				<< "您可以在出摊前在后厨准备好您的预制食品\n"
+				<< "以可以更快的出餐\n"
+				<<"缩短您的出餐时间可以获得更多的额外收入喔(小费)\n"
+				<<"但是，您要知道预制食品它的保存时间是很短的，您需要在一轮出餐中全部售完\n"
+				<<"否则，您就要将所有预制食品丢弃，我相信，您一定是以为有素质的摊主\n"
+				<< "您可以使用更高级的食材去烹饪相同的美食，以获取更高的利润和更好的口碑\n"
+				<< "当然，更高的价格也意味着更少的顾客，因为消费能力是有限的\n"
+				<< "您可以选择去采购预制食品，虽然可能性价比不高，但是可以很大的去缩减您的时间成本\n";
+			system("pause");
+			system("cls");
+			break;
+			;
+	//[Esc]退出小帮手
+		case 27:
+			return;
+			break;
+			;
+		default:
+			system("cls");
+			break;
+		}
+	}
 }
 ;
