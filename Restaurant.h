@@ -39,7 +39,7 @@ private:
 	int level = 0;						//餐馆等级(营业额每翻十倍升级)
 	int cosmax = 50;					//最大纳客量
 	int warehouse = 0;					//最大货仓量
-	bool openstate = 0;					//营业状态
+	bool openstate = 0;					//营业状态(1为开门）
 };
 extern Restaurant* restaurant;
 #endif

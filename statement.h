@@ -41,7 +41,7 @@ extern const char* checkword;			//验证标识符
 ;
 //变量声明(关于多线程)
 extern std::vector<Thread*>threads;			//线程集（用于管理子线程）
-extern std::mutex mtx_pause;				//用于全局暂停的线程锁
+extern std::mutex* mtx_pause;				//用于全局暂停的线程锁
 ;
 //函数声明
 void AllPause();					//全局暂停

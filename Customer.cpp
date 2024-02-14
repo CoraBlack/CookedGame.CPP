@@ -8,22 +8,23 @@ Customer::Customer(){
 	customers.push_back(this);
 	//函数对象
 	auto funcobj = std::bind(&Customer::RequestedMessage, &*this);
-	costrd = new Thread(funcobj);
+	custrd = nullptr;
+	custrd = new Thread(funcobj);
 	return;
 }
 //析构函数
-Customer::~Customer(){
+Customer::~Customer() {
 	//查找自身在向量中的位置
 	for (int i = 0; i < customers.size();) {
 		if (this == customers[i]) {
-		//移出
+			//移出
 			customers.erase(customers.begin() + i);
-			return;
+			break;
 		}
 		i++;
 	}
-	std::cerr << red << "（顾客）找不到在向量中的位置" << white;
-	system("pause");
+//销毁顾客对象的后台线程
+	delete custrd;
 	return;
 }
 ;
@@ -49,15 +50,19 @@ void Customer::Waitting(){
 	for (int i = 0; i < time;) {
 		Sleep(100);
 //尝试上锁已判断能否暂停函数
-		//临时上锁
-		costrd->mtx.lock();
-		costrd->mtx.unlock();
+	//若暂停则上锁
+		if (pausestate) {
+		//上锁堵塞线程
+			mtx_pause->lock();
+			mtx_pause->unlock();
+		}
 	//顾客订单完成后
 		if (needsstate) {
 		//增加营业额
 			restaurant->SetTurnover(restaurant->GetTurnover() + pay_amount);
 		//销毁对象
 			delete this;
+		//提前跳出
 			return;
 		}
 	//顾客订单在计时内未完成

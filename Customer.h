@@ -28,9 +28,9 @@ public:
 	//获取顾客需求状态
 	inline bool GetNeedsState() { return needsstate; };
 private:
-	Thread* costrd;									//线程
-	int wait_time_min = 180'000;					//默认是三分钟(千分之一秒为单位)
-	int wait_time_max = 300'000;					//默认是五分钟(千分之一秒为单位)
+	Thread* custrd;									//线程
+	int wait_time_min = 60'000;						//默认是一分钟(千分之一秒为单位)
+	int wait_time_max = 180'000;					//默认是三分钟(千分之一秒为单位)
 	std::vector<cuisine>needs;						//顾客的订单需求
 	float pay_amount = 0;							//顾客下单的预计报酬
 	bool needsstate = 0;							//顾客需求的状态(0为未满足，1为满足)

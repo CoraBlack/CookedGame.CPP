@@ -24,7 +24,7 @@ std::vector<Customer*>customers
 std::vector<cuisine>all_cuisine;			//全部菜肴
 ;
 //关于多线程
-std::mutex mtx_pause;
+std::mutex* mtx_pause = nullptr;            //初始化线程锁
 std::vector<Thread*>threads;
 //存档名称
 std::string save_name = "";
@@ -110,7 +110,13 @@ void Test() {
 ;
 void AllPause(){
 //对全局锁上锁
-    mtx_pause.lock();
+    //分配内存
+    mtx_pause = nullptr;
+    mtx_pause = new std::mutex;
+    mtx_pause->lock();
+    
+    
+    /*
 //对子线程上锁
     if (!threads.empty()) {
         for (int i = 0; i < threads.size();) {
@@ -118,11 +124,17 @@ void AllPause(){
             i++;
         }
     }
+    */
+
+
 //通告暂停
     std::cout << yellow << "\n游戏已经暂停\n" << white;
 //等待解锁(每0.1s检测一次)
     while (pausestate) { Sleep(100); }
 //暂停取消后越过循环
+    
+
+    /*
 //解锁子线程锁
     if (!threads.empty()) {
         for (int i = 0; i < threads.size();) {
@@ -130,8 +142,13 @@ void AllPause(){
             i++;
         }
     }
+    */
+
+
 //全局锁解锁
-    mtx_pause.unlock();
+    mtx_pause->unlock();
+    //释放内存
+    delete mtx_pause;
     std::cout << yellow << "游戏已回复\n" << white;
     return;
 }
@@ -175,7 +192,22 @@ void CreateCustomer() {
 //生成对象的循环
     while (restaurant->GetOpenState()) {
     //随机三十秒到两分钟创建一个顾客
-        Sleep(Random(30'000, 120'000));
+        //Sleep(Random(30'000, 120'000));
+        for (int i = 0; i < Random(300, 1200);) {
+            Sleep(100);
+        //检测开门状态
+            if (!restaurant->GetOpenState()) {
+            //关门了提前停止
+                return;
+            }
+        //检测暂停状态
+            if (pausestate) {
+            //堵塞
+                mtx_pause->lock();
+                mtx_pause->unlock();
+            }
+            i++;
+        }
     //检测状态是否继续创建
         if (restaurant->GetOpenState()) {
             Customer* newcus = nullptr;
