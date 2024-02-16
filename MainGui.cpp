@@ -1,8 +1,6 @@
 #include "MainGui.h"
 #include "statement.h"
 #include "conio.h"
-#include <fstream>
-;
 ;
 void MainGui::GameStart() {
 	system("cls");
