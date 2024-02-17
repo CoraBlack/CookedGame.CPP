@@ -2,10 +2,11 @@
 #define MAINGUI_H
 class MainGui{
 public:
-	void GameStart();					//æ¸¸æˆå¼€å§‹ä¸»èœå•
-	void ReadSaveFlie();				//è¯»å–å­˜æ¡£
-	void NewGame();						//æ–°æ¸¸æˆ
-	void CreateNewSave();				//æ–°å»ºå­˜æ¡£
+	void GameStart();					//ÓÎÏ·¿ªÊ¼Ö÷²Ëµ¥
+	void ReadSave();					//¶ÁÈ¡´æµµ½çÃæ
+	void NewGame();						//ĞÂÓÎÏ·
+	void CreateNewSave();				//ĞÂ½¨´æµµ
+	void Help();						//°ïÖú
 private:
 
 };

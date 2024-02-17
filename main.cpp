@@ -1,36 +1,40 @@
-ï»¿//ä¸»å‡½æ•°
-#include <iostream>
+//Ö÷º¯Êı
 #include"statement.h"
 #include<Windows.h>
 #include<thread>
 using namespace std;
-//å­—ä½“é¢œè‰²
+//×ÖÌåÑÕÉ«
 std::string red = "\033[31m";
 std::string green = "\033[32m";
 std::string yellow = "\033[33m";
 std::string white = "\033[0m";
 std::string blue = "\033[36m";
 ;
-//statement.hä¸­å…¨å±€å˜é‡çš„å®šä¹‰åŒºï¼ˆé˜²æ­¢é“¾æ¥å™¨é”™è¯¯ï¼‰
-bool initalize_state = 0;               //é»˜è®¤åˆå§‹åŒ–çŠ¶æ€ä¸ºå¦
-bool autosave_state = 1;				//é»˜è®¤å¼€å¯è‡ªåŠ¨å­˜æ¡£
-unsigned int autosave_time = 300'000;	//é»˜è®¤è‡ªåŠ¨å­˜æ¡£æ—¶é—´äº”åˆ†é’Ÿ
+//statement.hÖĞÈ«¾Ö±äÁ¿µÄ¶¨ÒåÇø£¨·ÀÖ¹Á´½ÓÆ÷´íÎó£©
+bool pausestate = 0;                    //ÓÎÏ·ÔİÍ£×´Ì¬
+bool initalize_state = 0;               //Ä¬ÈÏ³õÊ¼»¯×´Ì¬Îª·ñ
+bool autosave_state = 1;				//Ä¬ÈÏ¿ªÆô×Ô¶¯´æµµ
+unsigned int autosave_time = 300'000;	//Ä¬ÈÏ×Ô¶¯´æµµÊ±¼äÎå·ÖÖÓ
 
-//é¡¾å®¢é›†åˆ
+//¹Ë¿Í¼¯ºÏ
 std::vector<Customer*>customers
 ;
-//èœè‚´
-std::vector<cuisine>all_cuisine;			//å…¨éƒ¨èœè‚´
+//²ËëÈ
+std::vector<cuisine>all_cuisine;			//È«²¿²ËëÈ
 ;
-//çº¿ç¨‹ç»„
-std::vector<Thread>threads;
-//å­˜æ¡£åç§°
+//¹ØÓÚ¶àÏß³Ì
+Thread* createtrd = nullptr;			    //ÓÃÓÚ´´½¨¹Ë¿ÍĞÂ¶ÔÏóµÄ×¨ÓÃÏß³Ì¶ÔÏó
+std::mutex* mtx_pause = nullptr;            //³õÊ¼»¯Ïß³ÌËø
+std::mutex* mtx_save = nullptr;
+std::vector<Thread*>threads;                //Ïß³Ì×é
+//´æµµÃû³Æ
 std::string save_name = "";
-//ç”¨äºæ£€æµ‹æ–‡ä»¶ä¸ºå­˜æ¡£æ–‡ä»¶çš„æ ‡è¯†ç¬¦
+//ÓÃÓÚ¼ì²âÎÄ¼şÎª´æµµÎÄ¼şµÄ±êÊ¶·û
 const char* checkword = "CheckSave114514";
-int (*fucptr) ();
+const char* checksetting = "CookedSetting";
+const char* version = "0.62";
 ;
-//å¯¹è±¡å®ä¾‹åŒ–åŒº
+//¶ÔÏóÊµÀı»¯Çø
 Player* player = new Player();
 Restaurant* restaurant = new Restaurant();
 RestaurantUI* res_weight = new RestaurantUI();
@@ -38,55 +42,82 @@ IngredientMarketUI* market_weight = new IngredientMarketUI();
 ;
 ;
 ;
-//ä¸»å‡½æ•°
+
+
+
+
+//Ö÷º¯Êı
 int main(){
-    thread initialize_td(Initialize);//åˆ›å»ºä¸€æ¡çº¿ç¨‹ç”¨äºå¤„ç†åˆå§‹åŒ–å†…å®¹
-    initialize_td.detach();//å°†åˆå§‹åŒ–è¿›ç¨‹åå°å¤„ç†
-    /*
-    //Classå¯¹è±¡
-    Player* player;
-    Restaurant* restaurant;
-    Customer* customer;
-    RestaurantUI* res_weight;
-    IngredientMarketUI* market_weight;
-    */
- //å®ä¾‹åŒ–å¯¹è±¡
-    
+    //ºóÌ¨³õÊ¼»¯
+
+    thread initialize_td(Initialize);   //´´½¨Ò»ÌõÏß³ÌÓÃÓÚ´¦Àí³õÊ¼»¯ÄÚÈİ
+    initialize_td.detach();             //½«³õÊ¼»¯½ø³ÌºóÌ¨´¦Àí
+    {
+        //»ñÈ¡ÉèÖÃÎÄ¼şÖĞĞÅÏ¢
+        std::string settingpath = "C:/Users/Public/Documents/CookedSetting.txt";
+        std::ifstream ifs(settingpath);
+        ifs.open(settingpath);
+        //ÉèÖÃÎÄ¼ş²»´æÔÚĞÂ½¨
+        if (!ifs.is_open()) {
+            std::ofstream newfile(settingpath);
+            newfile.open(settingpath);
+            newfile << autosave_state;
+            newfile << autosave_time;
+            newfile.close();
+            newfile.clear();
+        }
+        //ÎÄ¼ş´æÔÚ£¬¶ÁÈ¡ÉèÖÃÎÄ¼ş
+        else {
+            autosave_state = (bool)StringToInt(GetFileLine(2, settingpath));        //¶ÁÈ¡×Ô¶¯´æµµ×´Ì¬
+        }
+        ifs.close();
+        ifs.clear();    //Çå³ıÎÄ¼şÁ÷×´Ì¬
+    }
+    //¿ª³¡ÎÄ×Ö£¨µ÷ÊÔÏÈÆÁ±Î£©
+    //È·¶¨ÔËĞĞ»·¾³
+    cout << yellow << "Warning:\n" << white 
+        << "±¾ÓÎÏ·½öÄÜÔÚWindowsÆ½Ì¨ÉÏÔËĞĞ£¬ÎªÈ·±£²Ê×ÖÄÜ¹»Õı³£ÔËĞĞ£¬ÇëÈ·±£ÏµÍ³ÔÚWin10ÒÔÉÏ\n"
+        <<"ÈôÄúµÄWindows°æ±¾²»Âú×ãĞèÇó£¬Äú¿ÉÒÔ°´ÏÂ[Tab]À´ÆÁ±ÎËùÓĞ²Ê×Ö£¬À´È·±£ÓÎÏ·µÄÕı³£ÔËĞĞ\n"
+        <<"ÈôÄúµÄWindows°æ±¾ÄÜÕı³£ÔËĞĞ£¬Çë°´ÏÂ¼üÅÌÉÏÆäËü¼üÒÔÕı³£¼ÌĞøÓÎÏ·\n";
+//ÆÁ±Î²Ê×Ö    
+    if (_getch() == 9) {
+        red = "";
+        yellow = "";
+        green = "";
+        white = "";
+        blue = "";
+        std::cout << "²Ê×ÖÒÑÆÁ±Î!";
+        system("cls");
+    }
     ;
-    //å¼€åœºæ–‡å­—ï¼ˆè°ƒè¯•å…ˆå±è”½ï¼‰
-    /*
-    cout << yellow << "Warningï¼š\n" << white << "æœ¬æ¸¸æˆä»…èƒ½åœ¨Windowså¹³å°ä¸Šè¿è¡Œï¼Œä¸”ç‰ˆæœ¬ä¸ä½äºWin10ï¼Œæœ›å‘¨çŸ¥ï¼\n";
-    system("pause");
-    ;
-    PrintVerbatim("Hello,Dear Player!\nI am so proud of that you can play my game");
-    PrintVerbatim("å…è®¸æˆ‘ä»‹ç»ä¸€è¾¹è‡ªå·±ï¼š\nCoca Cora");
-    Sleep(1000);
-    PrintVerbatim("and my good friend AF!!!!!!!!\nWell have a good time!!!");
-    system("pause");
-    system("cls");
-    */
-    ;
-    //ä¸»æµç¨‹å…¥å£å‡½æ•°(æµç¨‹æ‰˜ç®¡)
+    //Ö÷Á÷³ÌÈë¿Úº¯Êı(Á÷³ÌÍĞ¹Ü)
     MainGui* main_weight = new MainGui;
     main_weight->GameStart();
     // 
     // 
     // 
     // 
-    //äº¤æ¥æµ‹è¯•é€šé“
+    //½»½Ó²âÊÔÍ¨µÀ
     //Test();
+//Ïú»Ù¶ÔÏó
+    delete player;
+    delete restaurant;
+    delete res_weight;
+    delete market_weight;
     return 0;
 }
-;
-;
-;
-//å…¨å±€å‡½æ•°å®šä¹‰åŒº
-//æµ‹è¯•é€šé“
+
+
+
+
+
+//È«¾Öº¯Êı¶¨ÒåÇø
+//²âÊÔÍ¨µÀ
 void Test() {
-    //æ–¹ä¾¿æµ‹è¯•æ‰æ•²å¾—
+    //·½±ã²âÊÔ²ÅÇÃµÃ
     using namespace std;
 
-    //æµ‹è¯•éšæœºæ•°å¼•æ“
+    //²âÊÔËæ»úÊıÒıÇæ
    //cout << Random(1, 100);
     ;
     /*
@@ -98,58 +129,186 @@ void Test() {
     system("pause");
     */
     ;
-    //æµ‹è¯•é”®ç›˜è¾“å…¥
+    /*
+    //²âÊÔ¼üÅÌÊäÈë
     while (1) {
         cout << _getch() << "\n";
     }
+    */
+    ;
+    /*
+    //²âÊÔ´æµµ¹¦ÄÜ
+    cout << "input\n";
+    cin >> save_name;
+    save_name += ".txt";
+    SaveGameAll();
+    */
+    ;
+    /*
+    //²âÊÔ×Ö·û´®Á÷
+    float fl = StringToFloat("3.1415");
+    string str = NumToString(3.1415f);
+    */
+    ;
+    //²âÊÔ¶Áµµ
+    save_name = "save.txt";
+    ReadSaveAll();
+    system("pause");
 }
 ;
-void PauseMenu() {
-//æ‰“å°æ“ä½œåˆ—è¡¨
-    std::cout << green << "[Esc]è¿”å›\n[Tab]è®¾ç½®\n[Back]é€€å‡ºæ¸¸æˆ\n";
-    while (1) {
-        int input = _getch();
-        switch (input) {
-        case 9://Tab
-            return;
-            break;
-        case 27://Esc
-
-            break;
-        case 8://Back
-
-            break;
-        default:
-            break;
-        }
+void PauseGame(){
+//¶ÔÈ«¾ÖËøÉÏËø
+    //·ÖÅäÄÚ´æ
+    mtx_pause = nullptr;
+    mtx_pause = new std::mutex;
+    if (mtx_pause->try_lock()) {
+        //ÉÏËø³É¹¦£¬Í¨¸æÔİÍ£
+        pausestate = 1;
+        std::cout << yellow << "Message:ÓÎÏ·ÒÑ¾­ÔİÍ£\n" << white;
     }
+    else {
+        //Ê§°Ü
+        std::cerr << yellow << "Warning:ÓÎÏ·ÔİÍ£Ê§°Ü£¬¿ÉÄÜÓÎÏ·ÒÑ¾­ÔİÍ£\n" << white;
+    }
+    return;
+}
+;
+void ResumeGame() {
+//ËøÒÑ¾­ËøÉÏ
+    if (!mtx_pause->try_lock()) {
+        mtx_pause->unlock();
+        pausestate = 0;
+        std::cout << yellow << "Message:ÓÎÏ·ÒÔ»Ö¸´\n" << white;
+    }
+    //Ê§°Ü
+    else {
+        std::cerr << yellow << "Warning:ÓÎÏ·ËÆºõÒÑ¾­½â³ıÔİÍ££¬ÏÖÔÚ³¢ÊÔÖØĞÂ½â³ıÔİÍ£\n" << white;
+        mtx_pause->unlock();
+        pausestate = 0;
+    }
+//ÊÍ·ÅÄÚ´æ²¢³õÊ¼»¯
+    delete mtx_pause;
+    mtx_pause = nullptr;
+    return;
 }
 ;
 void SettingMenu() {
-
+    std::cout << yellow << "ÉĞÎ´¿ª·¢" << white;
+    system("pause");
+    return;
 }
 ;
-
-
-
-void AutoSave(bool mode /* æ‰‹åŠ¨å­˜æ¡£(0) è¿˜æ˜¯ è‡ªåŠ¨å­˜æ¡£(1) */) {
-    //è‡ªåŠ¨å­˜æ¡£æ¨¡å¼
-    if (mode) {
-        //æ˜¯å¦å¼€å¯è‡ªåŠ¨å­˜æ¡£
-        if (autosave_state) {
-            //ä¼‘çœ ï¼Œç­‰å¾…å­˜æ¡£
-            Sleep(autosave_time);
-
+void SaveGameAll() {
+    //¼ì²éËøÊÇ·ñÒÑ¾­´æÔÚ
+    if (mtx_save != nullptr) {
+        while (mtx_save != nullptr) {
+            Sleep(100);
         }
     }
-    //æ‰‹åŠ¨å­˜æ¡£
-    //å­˜æ¡£ä¸»ä½“æµç¨‹ï¼ˆå…±ç”¨ï¼‰
+    mtx_save = nullptr;
+    mtx_save = new std::mutex;
+
+    //¿ªÊ¼±£´æ
+    std::fstream fs;                                    //ÊäÈëÎÄ¼ş²Ù×÷Á÷
+    fs.open(save_name,std::ios::in);                    //¼ì²â´æµµÎÄ¼şÊÇ·ñ´æÔÚ
+
+    //ÎŞ·¨´ò¿ªÎÄ¼ş
+    if (!fs.is_open()) {
+        std::cerr << red << "Save Error:´æµµ´ò¿ªÊ§°Ü»ò´æµµÎÄ¼ş²»´æÔÚ£¡" << white;
+        fs.close();
+        fs.clear();                                     //ÖØÖÃÎÄ¼şÁ÷
+        return;                                         //ÌáÇ°ÍË³öº¯Êı
+    }
+
+    //ÁÙÊ±Á¿
+    std::string* str_temp = nullptr;                    
+    str_temp = new std::string;
+    fs >> *str_temp;
+
+    //Ä¿±êÎÄ¼ş²»ÊÇ´æµµÎÄ¼ş
+    if (*str_temp != checkword) {
+        std::cerr << red << "Save Error:Ä¿±êÎÄ¼ş²»ÊÇ´æµµÎÄ¼ş!\n" << white;
+        fs.close();
+        fs.clear();                                     //ÖØÖÃÎÄ¼şÁ÷
+        delete str_temp;
+        str_temp = nullptr;                             //ÇåÀíÁÙÊ±Á¿
+        return;
+    }
+    
+    *str_temp = GetFileLine(2, save_name);              //»ñÈ¡°æ±¾ºÅ
+    if (*str_temp == "wrong") {
+        fs.close();
+        fs.clear();
+        delete str_temp;
+        str_temp = nullptr;
+        return;
+    }
+
+    //Ä¿±êÎÄ¼ş°æ±¾Óëµ±Ç°ÓÎÏ·°æ±¾²»Ò»
+    if (*str_temp != version) {
+        std::cout << yellow << "Save Warning:´æµµ°æ±¾ºÍÓÎÏ·°æ±¾²»·û£¬ÕıÔÚ¸²¸Çµ±Ç°´æµµ\n" << white;
+    }
+    else {
+    //¼ì²é°æ±¾Ê±ÎŞ·¨´ò¿ªÎÄ¼ş
+        std::cerr << red << "Save Error:ÎŞ·¨Õı³£´ò¿ªÎÄ¼ş" << white;
+        fs.close();
+        fs.clear();                                     //ÖØÖÃÎÄ¼şÁ÷
+        delete str_temp;
+        str_temp = nullptr;                             //ÇåÀíÁÙÊ±Á¿
+        return;
+    }
+    fs.close();
+    fs.clear();                                         //ÖØÖÃÎÄ¼şÁ÷
+    delete str_temp;
+    str_temp = nullptr;                                 //ÇåÀíÁÙÊ±Á¿
+
+    fs = std::fstream(save_name);
+    fs.open(save_name, std::ios::trunc, std::ios::out); //Ê¹ÓÃturncÄ£Ê½Çå³ıÈ«²¿ÄÚÈİ£¬outÄ£Ê½Ğ´ÈëÄÚÈİ
+
+    //´æµµÔÚĞ´ÈëÊ±ÎŞ·¨´ò¿ª
+    if (!fs.is_open()) {
+        std::cerr << red << "Save Error:´æµµ´ò¿ªÊ§°Ü£¡ÎŞ·¨Õı³£½øĞĞ´æµµ²Ù×÷£¡" << white;
+        fs.close();
+        fs.clear();                                     //ÖØÖÃÎÄ¼şÁ÷
+        return;                                         //ÌáÇ°ÍË³ö
+    }
+
+    //È«¾Ö±êÊ¶
+    fs << checkword;                                    //Ğ´ÈëÑéÖ¤×Ö·û
+    fs << version;                                      //Ğ´Èë°æ±¾ºÅ
+
+    //Player
+    fs << "PlayerName";                                 //Íæ¼ÒÃû³Æ½×¶Î·û
+    fs << player->GetPlayerName();                      //´æÈëÍæ¼ÒÃû³Æ
+    fs << "PlayerMoney";                                //Íæ¼Ò´æ¿î±êÊ¶·û
+    fs << player->GetPlayerMoney();                     //´æÈëÍæ¼Ò´æ¿î
+    fs << "Plot";                                       //¾çÇéÍ¨¹ØÊı±êÊ¶·û
+    fs << (int)player->GetPlayerPlot();                 //´æÈë¾çÇéÍ¨¹ØÊı
+
+    //Restaurant
+    fs << "RestaurantTurnover";                         //²ÍÌüÓªÒµ¶î±êÊ¶·û
+    fs << restaurant->GetTurnover();                    //´æÈë²ÍÌüÓªÒµ¶î
+    fs << "RestaurantLevel";                            //²ÍÌüµÈ¼¶±êÊ¶·û
+    fs << (int)restaurant->GetLevel();                  //´æÈë²ÍÌüµÈ¼¶
+    fs << "IceBoxMax";                                  //²ÍÌü±ùÏä×î´ó´æÁ¿±êÊ¶·û
+    fs << (int)restaurant->GetIceBoxMax();              //´æÈë±ùÏä×î´ó´æÁ¿
+
+    //IceBox
+    fs << "IceBox";                                     //±ùÏä±êÊ¶·û
+    
+
+    fs << "End";                                        //½áÊø·û
+    fs.close();
+    fs.clear();
+    delete mtx_save;
+    mtx_save = nullptr;
+    return;
 }
 ;
 void Initialize() {
-    //è®¾ç½®åˆå§‹åŒ–çŠ¶æ€
+    //ÉèÖÃ³õÊ¼»¯×´Ì¬
     initalize_state = 1;
-    //æµ‹è¯•ç”¨æ–‡å­—
+    //²âÊÔÓÃÎÄ×Ö
     Sleep(1000);
 
     //std::cout << green << "Finish to initialize!" << white;
@@ -160,3 +319,157 @@ void ThreadTest() {
 
 }
 ;
+//Éú³É¹Ë¿Í
+void CreateCustomer() {
+//Éú³É¶ÔÏóµÄÑ­»·
+    while (restaurant->GetOpenState()) {
+    //Ëæ»úÈıÊ®Ãëµ½Á½·ÖÖÓ´´½¨Ò»¸ö¹Ë¿Í
+        //Sleep(Random(30'000, 120'000));
+        for (int i = 0; i < Random(300, 1200);) {
+            Sleep(100);
+        //¼ì²â¿ªÃÅ×´Ì¬
+            if (!restaurant->GetOpenState()) {
+            //¹ØÃÅÁËÌáÇ°Í£Ö¹
+                return;
+            }
+        //¼ì²âÔİÍ£×´Ì¬
+            if (pausestate) {
+            //¶ÂÈû
+                mtx_pause->lock();
+                mtx_pause->unlock();
+            }
+            i++;
+        }
+    //¼ì²â×´Ì¬ÊÇ·ñ¼ÌĞø´´½¨
+        if (restaurant->GetOpenState()) {
+            Customer* newcus = nullptr;
+            newcus = new Customer;
+            continue;
+        }
+    //²»ÔÙ´´½¨¹Ë¿Í
+        //µÈ´ı¹Ë¿ÍÇå¿Õ
+        while (!customers.empty()) { }
+        break;
+    }
+}
+
+void DeleteCustomer(Customer* cusptr/*Ïú»ÙµÄ¶ÔÏó*/) {
+    //²éÕÒ×ÔÉíÔÚÏòÁ¿ÖĞµÄÎ»ÖÃ
+    for (int i = 0; i < customers.size();) {
+        if (cusptr == customers[i]) {
+            //ÒÆ³ö
+            customers.erase(customers.begin() + i);
+            break;
+        }
+        i++;
+    }
+    //Ïú»Ù¹Ë¿Í¶ÔÏóµÄºóÌ¨Ïß³Ì
+    delete cusptr;
+    //·ÀÖ¹Ğü¿Õ
+    cusptr = nullptr;
+    return;
+}
+bool CheckSave() {
+    //ÑéÖ¤´æµµÊÇ·ñÒÑÊäÈë
+    if (save_name == "") {
+        std::cout << red << "´æµµĞÅÏ¢Îª¿Õ£¡\n" << white;
+        return 0;
+    }
+
+    std::ifstream ifs(save_name);       //ÎÄ¼şÁ÷
+    std::string str;                    //Ôİ´æÖµ
+
+    //³¢ÊÔ´ò¿ª
+    ifs.open(save_name, std::ios::in);
+    if (!ifs.is_open()) {
+        std:cout << red << "Read Error:ÎŞ·¨´ò¿ª´æµµÎÄ¼ş!\n" << white;
+        ifs.close();
+        ifs.clear();
+        return 0;
+    }
+
+    //ÑéÖ¤×Ö·û
+    str = GetFileLine(1, save_name);
+    if (str != checkword) {
+        std::cout << red << "Read Error:Ä¿±êÎÄ¼ş²»ÊÇ´æµµÎÄ¼ş!\n" << white;
+        ifs.close();
+        ifs.clear();
+        return 0;
+    }
+
+    //ÑéÖ¤°æ±¾ºÅ
+    str = GetFileLine(2, save_name);
+    if (str != version) {
+        std::cout << "Warning:Ä¿±êÎÄ¼ş°æ±¾²»Ò»£¬ÕıÔÚ³¢ÊÔĞ´Èë¡­¡­\n" << white;
+    }
+    return 1;
+}
+
+
+void ReadSaveAll() {
+    int line = 3;               //»ñÈ¡ĞĞÊı¼ÇÂ¼£¬´ÓµÚÈıĞĞ¿ªÊ¼»ñÈ¡£¨Ç°Á½ĞĞÎªÑéÖ¤£©
+    std::string str = "";       //Ôİ´æÎÄ¼ş×Ö·û
+    while (1) {
+
+        str = GetFileLine(line, save_name);
+
+        //´æÈëÃû³Æ
+        if (str == "PlayerName") {
+            line++;
+            player->SetPlayerName(GetFileLine(line, save_name));        //´æÈëÍæ¼ÒÃû
+            continue;
+        }
+
+        //´æÈëÍæ¼ÒÇ®²Æ
+        if (str == "PlayerMoney") {
+            line++;
+            player->SetPlayerMoney(StringToFloat(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //´æÈë¾çÇéÍ¨¹ØÊı
+        if (str == "Plot") {
+            line++;
+            player->SetPlayerPlot(StringToInt(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //²ÍÌüÓªÒµ¶î
+        if (str == "RestaurantTurnover") {
+            line++;
+            restaurant->SetTurnover(StringToFloat(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //²ÍÌüµÈ¼¶
+        if (str == "RestaurantLevel") {
+            line++;
+            restaurant->SetLevel(StringToInt(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //±ùÏä×î´óÈİÁ¿
+        if (str == "IceBoxMax") {
+            line++;
+            restaurant->SetIceBoxMax(StringToInt(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //±ùÏäÊ³²Ä
+        if (str == "IceBox") {
+            line++;
+
+            continue;
+        }
+
+        //½áÊø·û
+        /*ºß£¬Ôç¾ÍÖªµÀÄ³Ğ©ÈËÍæÕâ¸ö¶«Î÷¿Ï¶¨»á¸Ä´æµµÊı¾İ£¬°ÑëŞµÄEnd±êÊ¶·ûÉ¾µô£¬ÎÒÖ±½ÓÏŞËÀ10000ĞĞ[doge]*/
+        if (str == "End" || line >= 10000) {
+            break;
+        }
+        //¾ù²»³ÉÁ¢ÏÂÒ»ĞĞ¼ÌĞø
+        line++;
+    }
+    
+    return;
+}
