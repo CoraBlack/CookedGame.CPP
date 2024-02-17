@@ -2,7 +2,6 @@
 #include"Plot.h"
 #include"statement.h"
 void Plot_1() {
-    system("pause"); //等待用户按键
     PrintVerbatim("大学即将毕业的你，面对步入社会的迷茫，宿舍内的你们畅想着未来...");
     system("pause");//同上
     PrintVerbatim("傍晚时分，你决定去...");
@@ -13,11 +12,11 @@ void Plot_1() {
     while (flag) {
         switch (_getch()) {
         case 49:
-            std::cout << "\033[32m独自在享用晚饭，你觉得美食给子的满足是任何东西无法比拟的... (￣y▽,￣)╭\033[0m" << std::endl;
+            std::cout << yellow <<"独自在享用晚饭，你觉得美食给子的满足是任何东西无法比拟的... (￣y▽,￣)╭\n"<< white;
             flag = 0;
             break;
         case 50:
-            std::cout << "\033[32m李华拿着几袋外卖拍了拍你，美食的香味飘进了你的鼻子... (￣﹃￣)\033[0m" << std::endl;
+            std::cout << yellow <<"李华拿着几袋外卖拍了拍你，美食的香味飘进了你的鼻子... (￣﹃￣)\n" << white;
             flag = 0;
             break;
         default:
@@ -29,9 +28,9 @@ void Plot_1() {
     bool identify = 1;
     while (identify) {
         std::cout << "你选择..." << std::endl;
-        std::cout << "\033[33m叔父[1]（在一家饭店里当着厨师）\033[0m" << std::endl;
-        std::cout << "\033[33m李华[2]（你的好兄弟）\033[0m" << std::endl;
-        std::cout << "\033[33mMarry[3]（你的辅导员）\033[0m" << std::endl;
+        std::cout << green <<"叔父[1]（在一家饭店里当着厨师）\n" << white;
+        std::cout << green <<"李华[2]（你的好兄弟）\n" << white;
+        std::cout << green << "Marry[3]（你的辅导员\n" << white;
         switch (_getch()) {
         case 49:
             std::cout << "\033[32m身为老厨师的他，告诉了你一些行情行，并表示期待你的成就...\033[0m" << std::endl;

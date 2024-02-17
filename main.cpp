@@ -42,6 +42,10 @@ IngredientMarketUI* market_weight = new IngredientMarketUI();
 ;
 ;
 ;
+
+
+
+
 //主函数
 int main(){
     //后台初始化
@@ -64,7 +68,7 @@ int main(){
         }
         //文件存在，读取设置文件
         else {
-            autosave_state = (bool)StringToNum(GetFileLine(2, settingpath));        //读取自动存档状态
+            autosave_state = (bool)StringToInt(GetFileLine(2, settingpath));        //读取自动存档状态
         }
         ifs.close();
         ifs.clear();    //清除文件流状态
@@ -102,9 +106,11 @@ int main(){
     delete market_weight;
     return 0;
 }
-;
-;
-;
+
+
+
+
+
 //全局函数定义区
 //测试通道
 void Test() {
@@ -129,10 +135,25 @@ void Test() {
         cout << _getch() << "\n";
     }
     */
+    ;
+    /*
+    //测试存档功能
     cout << "input\n";
     cin >> save_name;
     save_name += ".txt";
     SaveGameAll();
+    */
+    ;
+    /*
+    //测试字符串流
+    float fl = StringToFloat("3.1415");
+    string str = NumToString(3.1415f);
+    */
+    ;
+    //测试读档
+    save_name = "save.txt";
+    ReadSaveAll();
+    system("pause");
 }
 ;
 void PauseGame(){
@@ -193,7 +214,7 @@ void SaveGameAll() {
 
     //无法打开文件
     if (!fs.is_open()) {
-        std::cerr << red << "Error:存档打开失败或存档文件不存在！" << white;
+        std::cerr << red << "Save Error:存档打开失败或存档文件不存在！" << white;
         fs.close();
         fs.clear();                                     //重置文件流
         return;                                         //提前退出函数
@@ -206,7 +227,7 @@ void SaveGameAll() {
 
     //目标文件不是存档文件
     if (*str_temp != checkword) {
-        std::cerr << red << "Error:目标文件不是存档文件!\n" << white;
+        std::cerr << red << "Save Error:目标文件不是存档文件!\n" << white;
         fs.close();
         fs.clear();                                     //重置文件流
         delete str_temp;
@@ -225,11 +246,11 @@ void SaveGameAll() {
 
     //目标文件版本与当前游戏版本不一
     if (*str_temp != version) {
-        std::cout << yellow << "Warning:存档版本和游戏版本不符，正在覆盖当前存档\n" << white;
+        std::cout << yellow << "Save Warning:存档版本和游戏版本不符，正在覆盖当前存档\n" << white;
     }
     else {
     //检查版本时无法打开文件
-        std::cerr << red << "Error:无法正常打开文件" << white;
+        std::cerr << red << "Save Error:无法正常打开文件" << white;
         fs.close();
         fs.clear();                                     //重置文件流
         delete str_temp;
@@ -246,7 +267,7 @@ void SaveGameAll() {
 
     //存档在写入时无法打开
     if (!fs.is_open()) {
-        std::cerr << red << "存档打开失败！无法正常进行存档操作！" << white;
+        std::cerr << red << "Save Error:存档打开失败！无法正常进行存档操作！" << white;
         fs.close();
         fs.clear();                                     //重置文件流
         return;                                         //提前退出
@@ -255,13 +276,15 @@ void SaveGameAll() {
     //全局标识
     fs << checkword;                                    //写入验证字符
     fs << version;                                      //写入版本号
+
     //Player
     fs << "PlayerName";                                 //玩家名称阶段符
     fs << player->GetPlayerName();                      //存入玩家名称
     fs << "PlayerMoney";                                //玩家存款标识符
-    fs << player->GetPlayerMoney();        //存入玩家存款
+    fs << player->GetPlayerMoney();                     //存入玩家存款
     fs << "Plot";                                       //剧情通关数标识符
     fs << (int)player->GetPlayerPlot();                 //存入剧情通关数
+
     //Restaurant
     fs << "RestaurantTurnover";                         //餐厅营业额标识符
     fs << restaurant->GetTurnover();                    //存入餐厅营业额
@@ -269,15 +292,11 @@ void SaveGameAll() {
     fs << (int)restaurant->GetLevel();                  //存入餐厅等级
     fs << "IceBoxMax";                                  //餐厅冰箱最大存量标识符
     fs << (int)restaurant->GetIceBoxMax();              //存入冰箱最大存量
-    //Ingredient
-    for (int i = 0; i < market_weight->all_ingredient.size();) {        //存入第N类食材
-        fs << "IngredientNum" + NumToString(i + 1);                     //存入第N类食材标识符
-        for (int j = 0; j < market_weight->all_ingredient[i].size();) { //存入第N类食材中的子项
-            fs << market_weight->all_ingredient[i][j]->possession;
-            j++;
-        }
-        i++;
-    }
+
+    //IceBox
+    fs << "IceBox";                                     //冰箱标识符
+    
+
     fs << "End";                                        //结束符
     fs.close();
     fs.clear();
@@ -348,5 +367,109 @@ void DeleteCustomer(Customer* cusptr/*销毁的对象*/) {
     delete cusptr;
     //防止悬空
     cusptr = nullptr;
+    return;
+}
+bool CheckSave() {
+    //验证存档是否已输入
+    if (save_name == "") {
+        std::cout << red << "存档信息为空！\n" << white;
+        return 0;
+    }
+
+    std::ifstream ifs(save_name);       //文件流
+    std::string str;                    //暂存值
+
+    //尝试打开
+    ifs.open(save_name, std::ios::in);
+    if (!ifs.is_open()) {
+        std:cout << red << "Read Error:无法打开存档文件!\n" << white;
+        ifs.close();
+        ifs.clear();
+        return 0;
+    }
+
+    //验证字符
+    str = GetFileLine(1, save_name);
+    if (str != checkword) {
+        std::cout << red << "Read Error:目标文件不是存档文件!\n" << white;
+        ifs.close();
+        ifs.clear();
+        return 0;
+    }
+
+    //验证版本号
+    str = GetFileLine(2, save_name);
+    if (str != version) {
+        std::cout << "Warning:目标文件版本不一，正在尝试写入……\n" << white;
+    }
+    return 1;
+}
+
+
+void ReadSaveAll() {
+    int line = 3;               //获取行数记录，从第三行开始获取（前两行为验证）
+    std::string str = "";       //暂存文件字符
+    while (1) {
+
+        str = GetFileLine(line, save_name);
+
+        //存入名称
+        if (str == "PlayerName") {
+            line++;
+            player->SetPlayerName(GetFileLine(line, save_name));        //存入玩家名
+            continue;
+        }
+
+        //存入玩家钱财
+        if (str == "PlayerMoney") {
+            line++;
+            player->SetPlayerMoney(StringToFloat(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //存入剧情通关数
+        if (str == "Plot") {
+            line++;
+            player->SetPlayerPlot(StringToInt(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //餐厅营业额
+        if (str == "RestaurantTurnover") {
+            line++;
+            restaurant->SetTurnover(StringToFloat(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //餐厅等级
+        if (str == "RestaurantLevel") {
+            line++;
+            restaurant->SetLevel(StringToInt(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //冰箱最大容量
+        if (str == "IceBoxMax") {
+            line++;
+            restaurant->SetIceBoxMax(StringToInt(GetFileLine(line, save_name)));
+            continue;
+        }
+
+        //冰箱食材
+        if (str == "IceBox") {
+            line++;
+
+            continue;
+        }
+
+        //结束符
+        /*哼，早就知道某些人玩这个东西肯定会改存档数据，把朕的End标识符删掉，我直接限死10000行[doge]*/
+        if (str == "End" || line >= 10000) {
+            break;
+        }
+        //均不成立下一行继续
+        line++;
+    }
+    
     return;
 }

@@ -54,7 +54,9 @@ extern std::mutex* mtx_save;			//用于防止存档保存冲突锁
 void PauseGame();						//全局暂停
 void ResumeGame();						//恢复游戏
 void SettingMenu();						//游戏设置菜单
+bool CheckSave();						//存档验证
 void SaveGameAll();						//全局存档
+void ReadSaveAll();						//读取存档
 void Initialize();						//初始化
 void ThreadTest();						//线程管理测试
 void Test();							//测试通道
@@ -96,7 +98,7 @@ inline std::string NumToString(int num/*整形重载*/) {
 	ss >> str;
 	return str;
 }
-inline std::string NumToString(float num/*浮点重载*/) {
+inline std::string NumToString(double num/*浮点重载*/) {
 	std::stringstream ss;
 	std::string str;
 	ss << num;
@@ -104,8 +106,15 @@ inline std::string NumToString(float num/*浮点重载*/) {
 	return str;
 }
 //字符转数字
-inline int StringToNum(std::string str) {
+inline int StringToInt(std::string str) {
 	int num = 0;
+	std::stringstream ss;
+	ss << str;
+	ss >> num;
+	return num;
+}
+inline float StringToFloat(std::string str) {
+	float num = 0.0f;
 	std::stringstream ss;
 	ss << str;
 	ss >> num;

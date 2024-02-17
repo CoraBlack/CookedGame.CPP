@@ -1,6 +1,7 @@
 #include "MainGui.h"
 #include "statement.h"
 #include "conio.h"
+#include "iomanip"
 ;
 void MainGui::GameStart() {
 	system("cls");
@@ -37,7 +38,7 @@ void MainGui::GameStart() {
 			}
 			break;
 		case 32://Space
-			return this->ReadSaveFlie();
+			return this->ReadSave();
 			break;
 		case 27://Esc
 			system("cls");
@@ -50,7 +51,7 @@ void MainGui::GameStart() {
 	}
 }
 ;
-void MainGui::ReadSaveFlie() {
+void MainGui::ReadSave() {
 //输入文件名称
 	system("cls");
 	std::cout << yellow << "请输入您的存档名称(输入Exit退出输入)" << white << Back;
@@ -59,7 +60,7 @@ void MainGui::ReadSaveFlie() {
 		system("cls");
 		std::cerr << red << "存档名称不能为空！！！" << white << Back;
 		system("pause");
-		return ReadSaveFlie();
+		return ReadSave();
 	}
 	else if (save_name == "Exit") {//输入Exit时
 		system("cls");
@@ -69,29 +70,29 @@ void MainGui::ReadSaveFlie() {
 //获取文件内容输入流
 	std::ifstream getfile;
 	getfile.open(save_name, std::ios::in);
-	std::string check_temp;//用于存储文件第一行字符的临时变量
-	getfile >> check_temp;
-//验证标识符
-	if (check_temp == checkword) {
-		std::cout << yellow << "正在读取数据，存档名" << green << save_name << white << Back;
 
+//存档验证
+	bool check = CheckSave();
+	if (!check) {
+		system("pause");
+		return this->ReadSave();
 	}
-	else {
-		//重置文件流
-		getfile.close();
-		getfile.clear();
-		std::cerr << red << "检测不到存档文件关键字，为保护游戏运行正常，将返回游戏主界面" << white << Back;
-		save_name = "";//重置
-		return this->GameStart();
-	}
-	;
+
+	std::cout << yellow << "正在读取数据，存档名" << green << save_name << white << Back;
+		
 //读档过程
-
-//重置文件流
-	getfile.close();
-	getfile.clear();
+	ReadSaveAll();
 //进入游戏
-	std::cout << green << "存档读取完毕" << white;
+	std::cout << green << "存档读取完毕\n" << white;
+	system("pause");
+	system("cls");
+//展示存档信息
+	std::cout << blue << "存档信息:\n"
+		<< yellow << "用户名:\t" << green << player->GetPlayerName() << Back
+		<< yellow << "钱财:\t" << green << std::setprecision(2) << std::fixed << player->GetPlayerMoney() << Back
+		<< yellow << "小摊:\t" << green << "Level " << restaurant->GetLevel() << Back
+		<< yellow << "营业额:\t" << green << std::setprecision(2) << std::fixed << restaurant->GetTurnover() << Back
+		<< white;
 //验证初始化
 	if (!initalize_state) {		//初始化未完成
 		std::cout << "等待初始化……\n";
