@@ -13,7 +13,9 @@ void Restaurant::SetLevel(int num){level = num; return;}
 
 void Restaurant::SetCostomerMax(int num){cosmax = num; return;}
 
-void Restaurant::SetWareHouseMax(int num){warehouse = num; return;}
+void Restaurant::SetIceBoxMax(unsigned int num){icebox_max = num; return;}
+
+unsigned int Restaurant::GetIceBoxMax() { return icebox_max; }
 
 bool Restaurant::GetOpenState() { return openstate; }
 
@@ -21,7 +23,10 @@ void Restaurant::SetOpenState(bool set_state) { openstate = set_state; return; }
 
 float Restaurant::GetTurnover() { return turnover; }
 
+unsigned int Restaurant::GetLevel(){ return level; }
+
 void Restaurant::SetTurnover(float set) { turnover = set; return; }
+
 
 void Restaurant::SwapIngredient(ingredient*& ing1, ingredient*& ing2){
 	ingredient* temp_ptr = ing1;

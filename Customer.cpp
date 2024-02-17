@@ -14,17 +14,9 @@ Customer::Customer(){
 }
 //析构函数
 Customer::~Customer() {
-	//查找自身在向量中的位置
-	for (int i = 0; i < customers.size();) {
-		if (this == customers[i]) {
-			//移出
-			customers.erase(customers.begin() + i);
-			break;
-		}
-		i++;
-	}
-//销毁顾客对象的后台线程
+//销毁后台操作线程
 	delete custrd;
+	custrd = nullptr;
 	return;
 }
 ;
@@ -61,9 +53,7 @@ void Customer::Waitting(){
 		//增加营业额
 			restaurant->SetTurnover(restaurant->GetTurnover() + pay_amount);
 		//销毁对象
-			delete this;
-		//提前跳出
-			return;
+			return DeleteCustomer(this);
 		}
 	//顾客订单在计时内未完成
 		i++;
@@ -74,7 +64,6 @@ void Customer::Waitting(){
 	//扣除营业额
 	restaurant->SetTurnover(restaurant->GetTurnover() - pay_amount);
 	//销毁对象
-	delete this;
-	return;
+	return DeleteCustomer(this);
 }
 

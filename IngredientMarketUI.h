@@ -12,13 +12,15 @@ struct ingredient {
 };
 class IngredientMarketUI:public MainGui{
 public:
+	std::vector<ingredient*>vegetable;								//蔬菜类食材
+	std::vector<ingredient*>meat;									//肉类食材
+	std::vector <std::vector<ingredient*>>all_ingredient;			//全部食材
 //成员函数
-	IngredientMarketUI();					//初始化构造函数
-	void IngredientMarket();				//食材市场
-	void ShoppingCartOperator();			//购物车的操作界面
-	void ChooseSomeIngredient(std::vector<ingredient*>&vec);			//食材浏览列表
+	IngredientMarketUI();											//初始化构造函数
+	void IngredientMarket();										//食材市场
+	void ShoppingCartOperator();									//购物车的操作界面
+	void ChooseSomeIngredient(std::vector<ingredient*>&vec);		//食材浏览列表
 	
-
 private:
 //食材
 	ingredient low_beef = { "半成品牛肉(低级)",1,40,0 };
@@ -26,10 +28,6 @@ private:
 	ingredient low_chicken = { "半成品鸡肉(低级)",1,25,0 };
 	ingredient low_Chicken_chops = { "半成品鸡扒(低级)",1,4,0 };
 
-	;
-	std::vector<ingredient*>vegetable;						//蔬菜类食材
-	std::vector<ingredient*>meat;							//肉类食材
-	std::vector <std::vector<ingredient*>>all_ingredient;	//全部食材
 	;
 //存储数据
 	int page = 0;											//浏览列表页数(从零开始为第一页)

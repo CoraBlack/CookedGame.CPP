@@ -19,39 +19,22 @@ Thread::Thread(std::function <void()> func){
 Thread::~Thread(){
 //检索线程在集中的位置
 	for (int i = 0; i < threads.size();) {
-	//比较线程ID法
-		if (threads[i]->trdworker->get_id() == this->GetThreadID()) {
+	//比较线程自定义类指针地址确定位置
+		if (threads[i] == this) {
 		//移出线程集
 			threads.erase(threads.begin() + i);
+		//跳出
 			break;
 		}
 		i++;
 	}
 //释放线程内存
 	delete trdworker;
+//防止悬空
+	trdworker = nullptr;
+	return;
 }
 ;
 
 
 std::thread::id Thread::GetThreadID() { return trdworker->get_id(); }
-
-
-
-
-
-;
-/*
-void Thread::PauseThread(){
-	mtx_pause.lock();
-//每0.2秒检查暂停状态
-	while (1) {
-		if (pausestate){
-			//解除锁恢复线程
-			mtx_pause.unlock();
-			break;
-		}
-	}
-	return;
-}
-;
-*/

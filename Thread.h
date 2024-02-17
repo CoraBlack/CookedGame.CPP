@@ -11,6 +11,6 @@ public:
 	~Thread();										//析构函数，终止进程
 private:
 	std::thread* trdworker;						//线程
-	bool state = 0;								//线程状态，0为停止，1为运行
+	//bool state = 0;							//线程状态，0为停止，1为运行
 };
 #endif
