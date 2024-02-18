@@ -1,53 +1,71 @@
-//å®šä¹‰å‰§æƒ…æµç¨‹çš„å‡½æ•°
+//¶¨Òå¾çÇéÁ÷³ÌµÄº¯Êı
 #include"Plot.h"
 #include"statement.h"
 void Plot_1() {
-    PrintVerbatim("å¤§å­¦å³å°†æ¯•ä¸šçš„ä½ ï¼Œé¢å¯¹æ­¥å…¥ç¤¾ä¼šçš„è¿·èŒ«ï¼Œå®¿èˆå†…çš„ä½ ä»¬ç•…æƒ³ç€æœªæ¥...");
-    system("pause");//åŒä¸Š
-    PrintVerbatim("å‚æ™šæ—¶åˆ†ï¼Œä½ å†³å®šå»...");
-    std::cout << "\033[33mé£Ÿå ‚[1]\033[0m" << std:: endl;
-    std::cout << "\033[33mæ“åœº[2]\033[0m" << std::endl;
-    std::cout << "ä½ é€‰æ‹©..." << std::endl;
+    PrintVerbatim("´óÑ§¼´½«±ÏÒµµÄÄã£¬Ãæ¶Ô²½ÈëÉç»áµÄÃÔÃ££¬ËŞÉáÄÚµÄÄãÃÇ³©Ïë×ÅÎ´À´...");
+    system("pause");//Í¬ÉÏ
+    system("cls");
+    PrintVerbatim("°øÍíÊ±·Ö£¬Äã¾ö¶¨È¥...");
+    std::cout << "\033[33mÊ³ÌÃ[1]\033[0m" << std:: endl;
+    std::cout << "\033[33m²Ù³¡[2]\033[0m" << std::endl;
+    std::cout << "ÄãÑ¡Ôñ..." << std::endl;
     bool flag = 1;
     while (flag) {
         switch (_getch()) {
         case 49:
-            std::cout << yellow <<"ç‹¬è‡ªåœ¨äº«ç”¨æ™šé¥­ï¼Œä½ è§‰å¾—ç¾é£Ÿç»™å­çš„æ»¡è¶³æ˜¯ä»»ä½•ä¸œè¥¿æ— æ³•æ¯”æ‹Ÿçš„... (ï¿£yâ–½,ï¿£)â•­\n"<< white;
+            system("cls");
+            std::cout << yellow;
+            PrintVerbatim(yellow + "¶À×ÔÔÚÏíÓÃÍí·¹£¬Äã¾õµÃÃÀÊ³¸øÄãµÄÂú×ãÊÇÈÎºÎ¶«Î÷ÎŞ·¨±ÈÄâµÄ... (£şy¨Œ,£ş)¨q\n" + white);
+            std::cout << white;
             flag = 0;
             break;
         case 50:
-            std::cout << yellow <<"æåæ‹¿ç€å‡ è¢‹å¤–å–æ‹äº†æ‹ä½ ï¼Œç¾é£Ÿçš„é¦™å‘³é£˜è¿›äº†ä½ çš„é¼»å­... (ï¿£ï¹ƒï¿£)\n" << white;
+            system("cls");
+            std::cout << yellow;
+            PrintVerbatim("Àî»ªÄÃ×Å¼¸´üÍâÂôÅÄÁËÅÄÄã£¬ÃÀÊ³µÄÏãÎ¶Æ®½øÁËÄãµÄ±Ç×Ó... (£ş¦ê£ş)\n");
+            std::cout << white;
             flag = 0;
             break;
         default:
             break;
-        }//ä¸­é—´å·²çœç•¥
+        }//ÖĞ¼äÒÑÊ¡ÂÔ
     }
     system("pause");
-    PrintVerbatim("ä½†æ˜¯å­¦ç®¡ç†å­¦çš„ä½ ï¼Œå¹¶ä¸çŸ¥é“è¯¥å¦‚ä½•åšå‡ºç¬¬ä¸€æ­¥...\n\nä½ è¯€å®šå¾—æ‰¾ä¸€ä¸ªäººè°ˆè°ˆ...");
-    bool identify = 1;
-    while (identify) {
-        std::cout << "ä½ é€‰æ‹©..." << std::endl;
-        std::cout << green <<"å”çˆ¶[1]ï¼ˆåœ¨ä¸€å®¶é¥­åº—é‡Œå½“ç€å¨å¸ˆï¼‰\n" << white;
-        std::cout << green <<"æå[2]ï¼ˆä½ çš„å¥½å…„å¼Ÿï¼‰\n" << white;
-        std::cout << green << "Marry[3]ï¼ˆä½ çš„è¾…å¯¼å‘˜\n" << white;
+    system("cls");
+    PrintVerbatim(yellow + "µ«ÊÇÑ§¹ÜÀíÑ§µÄÄã£¬²¢²»ÖªµÀ¸ÃÈçºÎ×ö³öµÚÒ»²½...\nÄã¾÷¶¨µÃÕÒÒ»¸öÈËÌ¸Ì¸..." + white);
+    flag = 1;
+    while (flag) {
+        std::cout << "ÄãÑ¡Ôñ...\n";
+        std::cout << green <<"Êå¸¸[1]£¨ÔÚÒ»¼Ò·¹µêÀïµ±×Å³øÊ¦£©\n" << white;
+        std::cout << green <<"Àî»ª[2]£¨ÄãµÄºÃĞÖµÜ£©\n" << white;
+        std::cout << green << "Marry[3]£¨ÄãµÄ¸¨µ¼Ô±)\n" << white;
         switch (_getch()) {
         case 49:
-            std::cout << "\033[32mèº«ä¸ºè€å¨å¸ˆçš„ä»–ï¼Œå‘Šè¯‰äº†ä½ ä¸€äº›è¡Œæƒ…è¡Œï¼Œå¹¶è¡¨ç¤ºæœŸå¾…ä½ çš„æˆå°±...\033[0m" << std::endl;
-            identify = 0;
+            std::cout << yellow;
+            PrintVerbatim("ÉíÎªÀÏ³øÊ¦µÄËû£¬¸æËßÁËÄãÒ»Ğ©ĞĞÇé£¬²¢±íÊ¾ÆÚ´ıÄãµÄ³É¾Í...\n");
+            std::cout << white;
+            flag = 0;
             break;
         case 50:
-            std::cout << "\033[32mä»–è™½ç„¶ä¹Ÿä¸å¤§äº†è§£ï¼Œä½†èº«ä¸ºå¤§åƒè´§çš„ä»–ï¼Œå¦‚æœéœ€è¦è¯•åƒï¼Œä»–ä¹‰ä¸å®¹è¾... o(ï¿£â–½ï¿£)ï½„\033[0m" << std::endl;
-            identify = 0;
+            std::cout << yellow;
+            PrintVerbatim("ËûËäÈ»Ò²²»´óÁË½â£¬µ«ÉíÎª´ó³Ô»õµÄËû£¬Èç¹ûĞèÒªÊÔ³Ô£¬ËûÒå²»Èİ´Ç... o(£ş¨Œ£ş)£ä\n");
+            std::cout << white;
+            flag = 0;
             break;
         case 51:
-            std::cout << "\033[32må¥¹è¡¨ç¤ºä½ çš„æƒ³æ³•ä¸é”™ï¼Œå¹¶å˜±å’ä½ è¦æœ‰æ˜ç¡®ç›®æ ‡è§„åˆ’...\033[0m" << std::endl;
-            identify = 0;
+            std::cout << yellow;
+            PrintVerbatim("Ëı±íÊ¾ÄãµÄÏë·¨²»´í£¬²¢Öö¸ÀÄãÒªÓĞÃ÷È·Ä¿±ê¹æ»®...\n");
+            std::cout << white;
+            flag = 0;
             break;
         default:
             break;
         }
     }
     system("pause");
-    PrintVerbatim("ä½ ä¿¡èª“æ—¦æ—¦çš„è¯´ï¼šâ€œèƒ½æœåŠ¡å¥½é£Ÿå®¢æ˜¯ä½ çš„æœ€çœŸè¯šçš„æƒ³æ³•!â€... <(ï¿£ï¸¶ï¿£)â†—[GO!]");
+    PrintVerbatim("ÄãĞÅÊÄµ©µ©µÄËµ£º¡°ÄÜ·şÎñºÃÊ³¿ÍÊÇÄãµÄ×îÕæ³ÏµÄÏë·¨!¡±... <(£ş¦á£ş)¨J[GO!]");
+    system("pause");
+    PrintVerbatim("¿´±éÉíÉÏ£¬Ò²¾ÍÖ»ÓĞ½ö½ö1000¿é£¬Ğ¡Ì¯ÉúÒâ¶Ô×Ô¼ºÀ´ËµÒ²ĞíÊÇ×îºÃµÄ¿ªÊ¼¡­¡­");
+    player->SetPlayerPlot(1);
+    return;
 }

@@ -46,7 +46,7 @@ void RestaurantUI::MainResMenu() {
 ;
 void RestaurantUI::ResOpenMenu(){
 	std::cout << blue << "Do it!顾客,正在源源不断向你进军!!!\n" << green
-			  << "[Tab]切换营业状态\n[F]制作美食\n[Esc]暂停游戏\n" << white;
+			  << "[Tab]切换营业状态\n[F]制作美食\n[R]顾客请求\n[Esc]暂停游戏\n" << white;
 	int input = 0;
 	while (1){
 		input = _getch();
@@ -89,11 +89,20 @@ void RestaurantUI::ResOpenMenu(){
 			;
 	//[F]制作美食
 		case 102:
-
+			CookedUI();
+			return this->ResOpenMenu();
 			break;
 			;
+
+	//[R]
+		case 114:
+			ProcessRequit();
+			return this->ResOpenMenu();
+			break;
+
 	//[Esc]
 		case 27:
+
 		//游戏正在运行
 			if (!pausestate){
 				PauseGame();
@@ -301,7 +310,142 @@ void RestaurantUI::IceBoxUI(int page){//page为当前页，0为第一页
 		}
 	}
 }
-void RestaurantUI::CookedUI(){
 
+void RestaurantUI::CookedUI(){
+	system("cls");
+	while (1) {
+		std::cout << blue << "烹饪!\n" << white;
+		std::cout << green << "[Tab]烹饪手册\n[F]返回\n[Esc]暂停\n" << white;
+		switch ((int)_getch()){
+		//[Tab]烹饪手册
+		case 9:
+			HandBookUI();
+			return this->CookedUI();
+			break;
+
+		//[F]返回
+		case 102:
+			system("cls");
+			return;
+			break;
+
+		//[Esc]暂停游戏
+		case 27:
+			//游戏正在运行
+			if (!pausestate) {
+				PauseGame();
+			}
+			else {
+				//游戏已暂停
+				ResumeGame();
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+}
+
+void RestaurantUI::HandBookUI(){
+	
+}
+
+void RestaurantUI::ProcessRequit(){
+	system("cls");
+
+	//没有顾客
+	if (customers.empty()) {
+		system("cls");
+		std::cout << yellow << "还没有客人，再等等吧……\n";
+		system("pause");
+		system("cls");
+		return;
+	}
+
+	for (int i = 0; i < customers.size();) {
+		std::cout << blue << "[" << i << "]" << "Customer:  " << white;
+		for (int j = 0; j < customers[i]->needs.size();) {
+			std::cout << yellow << customers[i]->needs[j].name << white;
+			j++;
+		}
+		std::cout << Back;
+		i++;
+	}
+	std::cout << green << "选择选项前的数字以对目标顾客进行操作\n"
+		<< "[Esc]返回\n" << white;
+
+	int input = _getch();
+
+	//选择
+	if (input >= 48 && input <= 57) {
+		if (input - 48 >= customers.size()) {
+			return this->ProcessRequit();
+		}
+
+		for (int i = 0; i < customers[input - 48]->needs.size();) {
+			std::cout << yellow << customers[input - 48]->needs[i].name << "	\n" << white;
+			i++;
+		}
+
+		std::cout << green << "[Space]提交\n[Esc]返回\n";
+
+
+		while (1){
+
+			int input2 = _getch();
+
+			//提交
+			if (input2 == 32) {
+				std::vector<int>nums;
+
+				//检索
+				for (int i = 0; i < customers[input - 48]->needs.size();) {
+					for (int j = 0; j < finish.size();) {
+						//检索成功
+						if (finish[j].name == customers[input - 48]->needs[i].name) {
+							nums.push_back(j);
+							break;
+						}
+						j++;
+					}
+					//当前层检索不到
+					if (i + 1 != nums.size()) {
+						std::cout << yellow << "您还没有准备好这名顾客所需的食物\n";
+						system("pause");
+						return this->ProcessRequit();
+					}
+					i++;
+				}
+				
+				//循环正常完成(开始处理数据）
+				for (int i = 0; i < nums.size();) {
+					finish.erase(finish.begin() + nums[i] - 1);
+					i++;
+				}
+				nums.clear();
+				customers[input - 48]->SetNeedsState(1);
+				std::cout << green << "提交成功！\n";
+				system("cls");
+				system("pause");
+				return this->ResOpenMenu();
+			}
+
+			//返回
+			if (input2 == 27) {
+				system("cls");
+				return this->ProcessRequit();
+			}
+
+		}
+
+	}
+
+	//返回
+	if (input == 27) {
+		return;
+	}
+
+	return this->ProcessRequit();
 }
 ;

@@ -12,9 +12,36 @@ struct ingredient {
 };
 class IngredientMarketUI:public MainGui{
 public:
-	std::vector<ingredient*>vegetable;								//蔬菜类食材
-	std::vector<ingredient*>meat;									//肉类食材
-	std::vector <std::vector<ingredient*>>all_ingredient;			//全部食材
+
+//食材
+	//肉类
+	ingredient low_beef_chops = { "半成品牛排(低级)",1,6,0 };
+	ingredient low_pork_chops = { "半成品猪排(低级)",1,5,0 };
+	ingredient low_Chicken_chops = { "半成品鸡扒(低级)",1,4,0 };
+
+	//谷物类
+	ingredient low_burger_bun = { "汉堡面包(低级)",1,0.5,0 };
+
+	;
+
+//存储管理集
+	std::vector<ingredient*>vegetable = {
+
+	};//蔬菜类食材
+
+	std::vector<ingredient*>meat = {
+		&low_beef_chops,
+		&low_pork_chops,
+		&low_Chicken_chops
+	};//肉类食材
+
+	std::vector<ingredient*>cereals = {
+		&low_burger_bun
+	};//谷物类食材
+
+
+	std::vector <std::vector<ingredient*>> all_ingredient;//全部食材
+
 //成员函数
 	IngredientMarketUI();											//初始化构造函数
 	void IngredientMarket();										//食材市场
@@ -22,13 +49,6 @@ public:
 	void ChooseSomeIngredient(std::vector<ingredient*>&vec);		//食材浏览列表
 	
 private:
-//食材
-	ingredient low_beef = { "半成品牛肉(低级)",1,40,0 };
-	ingredient low_pork = { "半成品猪肉(低级)",1,30,0 };
-	ingredient low_chicken = { "半成品鸡肉(低级)",1,25,0 };
-	ingredient low_Chicken_chops = { "半成品鸡扒(低级)",1,4,0 };
-
-	;
 //存储数据
 	int page = 0;											//浏览列表页数(从零开始为第一页)
 	float total_price = 0;									//选购总价

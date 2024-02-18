@@ -49,8 +49,10 @@ extern Thread* createtrd;				//用于创建顾客新对象的专用线程对象
 extern std::vector<Thread*>threads;		//线程集（用于管理子线程）
 extern std::mutex* mtx_pause;			//用于全局暂停的线程锁
 extern std::mutex* mtx_save;			//用于防止存档保存冲突锁
+extern std::mutex* mtx_autosave;		//用于防止自动保存反复开启的保护锁
 ;
 //函数声明
+void LaunchAutoSave();					//启动自动保存
 void PauseGame();						//全局暂停
 void ResumeGame();						//恢复游戏
 void SettingMenu();						//游戏设置菜单
@@ -106,6 +108,13 @@ inline std::string NumToString(double num/*浮点重载*/) {
 	return str;
 }
 //字符转数字
+inline int StringToInt(char ch) {
+	int num = 0;
+	std::stringstream ss;
+	ss << ch;
+	ss >> num;
+	return num;
+}
 inline int StringToInt(std::string str) {
 	int num = 0;
 	std::stringstream ss;

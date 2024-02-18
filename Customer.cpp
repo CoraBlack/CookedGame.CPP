@@ -43,7 +43,7 @@ void Customer::Waitting(){
 		Sleep(100);
 //³¢ÊÔÉÏËøÒÑÅÐ¶ÏÄÜ·ñÔÝÍ£º¯Êý
 	//ÈôÔÝÍ£ÔòÉÏËø
-		if (pausestate) {
+				if (pausestate) {
 		//ÉÏËø¶ÂÈûÏß³Ì
 			mtx_pause->lock();
 			mtx_pause->unlock();

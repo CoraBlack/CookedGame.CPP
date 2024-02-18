@@ -10,7 +10,7 @@ public:
 	std::thread::id GetThreadID();					//获取线程的ID
 	~Thread();										//析构函数，终止进程
 private:
-	std::thread* trdworker;						//线程
-	//bool state = 0;							//线程状态，0为停止，1为运行
+	std::thread* trdworker;							//线程
+	//bool state = 0;								//线程状态，0为停止，1为运行
 };
 #endif

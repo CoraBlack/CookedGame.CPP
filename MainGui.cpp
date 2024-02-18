@@ -2,57 +2,70 @@
 #include "statement.h"
 #include "conio.h"
 #include "iomanip"
+#include"Plot.h"
 ;
 void MainGui::GameStart() {
 	system("cls");
-//输出内容
+
+	//输出内容
 	std::cout << yellow << "Cooked！" << std::endl;
 	std::cout << green << "[Tab]新游戏\n[Space]读取游戏\n[Esc]设置" << white << std::endl;
-//选择
+
+	//选择
 	while (1) {
-		int input = _getch();//获取键盘输入
-		//测试用（查看输入值）
-		//std::cout << input << std::endl;
+		int input = _getch();				//获取键盘输入
+		
 		switch (input) {
-		case 9://Tab
+		//[Tab]新游戏
+		case 9:
 			system("cls");
 			std::cout << yellow << "你真的需要创建一个新游戏吗?\n" 
 					  << green << "[Tab]确定创建新游戏\n[Esc]取消创建" << std::endl;
-			input = 0;//重置输入值
-			//确定创建
+			input = 0;						//重置输入值
+			//询问确定创建？
 			while (1) {
 				input = _getch();
 				switch (input) {
-				case 9://Tab
+				//[Tab]确定创建
+				case 9:
 					system("cls");
 					return this->CreateNewSave();
 					break;
-				case 27://Esc
+
+				//[Esc]取消创建
+				case 27:
 					input = 0;
-					system("cls");
 					return this->GameStart();
 					break;
+
 				default:
 					break;
 				}
 			}
 			break;
-		case 32://Space
+
+		//[Space]读取存档
+		case 32:
 			return this->ReadSave();
 			break;
-		case 27://Esc
+
+		//[Esc]返回上一级
+		case 27:
 			system("cls");
 			SettingMenu();
 			return GameStart();
 			break;
+
 		default:
 			break;
 		}
 	}
+	return;
 }
 ;
 void MainGui::ReadSave() {
-//输入文件名称
+
+	//输入文件名称
 	system("cls");
 	std::cout << yellow << "请输入您的存档名称(输入Exit退出输入)" << white << Back;
 	getline(std::cin, save_name);
@@ -66,12 +79,14 @@ void MainGui::ReadSave() {
 		system("cls");
 		return this->GameStart();
 	}
+
 	save_name += ".txt";
-//获取文件内容输入流
+
+	//获取文件内容输入流
 	std::ifstream getfile;
 	getfile.open(save_name, std::ios::in);
 
-//存档验证
+	//存档验证
 	bool check = CheckSave();
 	if (!check) {
 		system("pause");
@@ -80,20 +95,23 @@ void MainGui::ReadSave() {
 
 	std::cout << yellow << "正在读取数据，存档名" << green << save_name << white << Back;
 		
-//读档过程
+	//读档过程
 	ReadSaveAll();
-//进入游戏
+
+	//进入游戏
 	std::cout << green << "存档读取完毕\n" << white;
 	system("pause");
 	system("cls");
-//展示存档信息
+
+	//展示存档信息
 	std::cout << blue << "存档信息:\n"
 		<< yellow << "用户名:\t" << green << player->GetPlayerName() << Back
 		<< yellow << "钱财:\t" << green << std::setprecision(2) << std::fixed << player->GetPlayerMoney() << Back
 		<< yellow << "小摊:\t" << green << "Level " << restaurant->GetLevel() << Back
 		<< yellow << "营业额:\t" << green << std::setprecision(2) << std::fixed << restaurant->GetTurnover() << Back
 		<< white;
-//验证初始化
+
+	//验证初始化
 	if (!initalize_state) {		//初始化未完成
 		std::cout << "等待初始化……\n";
 		while (1){
@@ -103,6 +121,7 @@ void MainGui::ReadSave() {
 			}
 		}
 	}
+
 	system("pause");
 	system("cls");
 	return res_weight->MainResMenu();
@@ -110,22 +129,30 @@ void MainGui::ReadSave() {
 ;
 void MainGui::NewGame() {
 	system("cls");
-//打开帮助界面
+
+	//打开帮助界面
 	std::cout << yellow << "在开始游戏前,您有必要看一遍游戏的帮助手册\n" << white;
 	Help();
-	std::cout << blue << "正在前往您的摊位\n" << white;
-	Loading(10);
-//新游戏引入
+	system("cls");
 
-//转向摊子操作界面
+	//新游戏引入
+	Plot_1();
+
+	system("cls");
+	std::cout << blue << "接下来看你的大展身手了！\n" << white;
+	system("pause");
+	system("cls");
+	//转向摊子操作界面
 	return res_weight->MainResMenu();
 }
 ;
 void MainGui::CreateNewSave() {
-//输入新存档名称
+
+	//输入新存档名称
 	std::cout << yellow << "输入新的存档名称:" << white << Back;
 	getline(std::cin, save_name);
-//防止输入内容为空
+
+	//防止输入内容为空
 	if (save_name == "") {
 		system("cls");
 		std::cerr << red << "存档名称不能为空！！！" << white << Back;
@@ -137,26 +164,29 @@ void MainGui::CreateNewSave() {
 		save_name = "";
 		return this->CreateNewSave();
 	}
-//补全文件格式
+
+	//补全文件格式
 	save_name += ".txt";
-//检查是否已存在该存档
-	std::fstream savefile(save_name);
+
+	//检查是否已存在该存档
+	std::fstream savefile(save_name);		//文件流
 	if (savefile.good()) {
-	//检测到重名文件(有bug目前)
+
+	//检测到重名文件
 		std::cerr << yellow << "Warning:检测到存档文件已存在，是否继续创建？\n" 
 				  << green << "[Space]继续\n[Esc]返回\n" << white;
 		int input = 0;
 	//输入为Space时继续
 		do {
 			input = _getch();
-			if (input == 27) {
-			//输入ESC时重新创建
+			if (input == 27) {				//输入ESC时重新创建
 				system("cls");
 				return this->GameStart();
 			}
-		} while (input != 32);//强制创建同名文件
+		} while (input != 32);				//强制创建同名文件
 	}
-//继续创建
+
+	//继续创建
 	std::ofstream newsave;
 	newsave.open(save_name, std::ios::out);
 	if (!newsave.is_open()) {
@@ -171,11 +201,15 @@ void MainGui::CreateNewSave() {
 		newsave.clear();
 		system("pause");
 	}
-//检查初始化
-	if (!initalize_state) {		//初始化未完成
+
+	//开始存档
+	SaveGameAll();
+
+	//检查初始化
+	if (!initalize_state) {						//初始化未完成
 		std::cout << "等待初始化……\n";
 		while (1) {
-			Sleep(500);			//0.5秒检测一次初始化是否成功
+			Sleep(500);							//0.5秒检测一次初始化是否成功
 			if (initalize_state) {
 				return this->NewGame();
 			}
@@ -186,20 +220,25 @@ void MainGui::CreateNewSave() {
 }
 ;
 void MainGui::Help(){
+
 	int input = 0;
+
 	while (1) {
 		std::cout << blue
 			<< "小帮手:\n" << yellow
 			<< "[1]关于摊位\n[2]关于顾客系统\n[3]关于烹饪系统\n[Esc]退出小帮手\n"
 			<< white;
+
 		input = _getch();
+
 		switch (input){
-	//[1]关于摊位的说明
+		//[1]关于摊位的说明
 		case 49:
 			system("cls");
 			break;
-			;
-	//[2]关于顾客系统的说明
+			
+
+		//[2]关于顾客系统的说明
 		case 50:
 			system("cls");
 			std::cout << blue << "基本操作:\n" << white
@@ -212,8 +251,9 @@ void MainGui::Help(){
 			system("cls");
 			break;
 			break;
-			;
-	//[3]烹饪系统的说明
+			
+
+		//[3]烹饪系统的说明
 		case 51:
 			system("cls");
 			std::cout << blue << "基本操作:\n"
@@ -230,12 +270,14 @@ void MainGui::Help(){
 			system("pause");
 			system("cls");
 			break;
-			;
-	//[Esc]退出小帮手
+			
+
+		//[Esc]退出小帮手
 		case 27:
 			return;
 			break;
-			;
+			
+
 		default:
 			system("cls");
 			break;
