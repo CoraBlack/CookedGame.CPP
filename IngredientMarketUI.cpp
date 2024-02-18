@@ -248,6 +248,7 @@ void IngredientMarketUI::ShoppingCartOperator(){
 	}
 }
 ;
+
 //缺一个检索功能
 void IngredientMarketUI::ChooseSomeIngredient(std::vector<ingredient*>&vec){
 	std::cout << blue << "Page:" << green << this->page + 1 << yellow << Back;

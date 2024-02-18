@@ -24,10 +24,10 @@ public:
 
 
 	//all//全部菜肴
-	std::vector<cuisine>all_cuisine = {
-		chicken_burger,
-		beef_burger,
-		pork_burger
+	std::vector<cuisine*>all_cuisine = {
+		&chicken_burger,
+		&beef_burger,
+		&pork_burger
 	};
 	void Level_1();						//餐厅升级至等级1
 //摊位

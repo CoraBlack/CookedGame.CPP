@@ -28,7 +28,7 @@ void Customer::RequestedMessage(){
 //为顾客添加需求
 	for (int i = 0; i < Random(1, 3);) {
 	//随机需求
-		needs.push_back(restaurant->all_cuisine[Random(0, restaurant->all_cuisine.size() - 1)]);
+		needs.push_back(*(restaurant->all_cuisine[Random(0, restaurant->all_cuisine.size() - 1)]));
 		i++;
 	}
 	std::cout << yellow << "Message:" << green << "新的顾客!\n";

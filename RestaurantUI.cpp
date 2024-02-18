@@ -46,7 +46,7 @@ void RestaurantUI::MainResMenu() {
 ;
 void RestaurantUI::ResOpenMenu(){
 	std::cout << blue << "Do it!顾客,正在源源不断向你进军!!!\n" << green
-			  << "[Tab]切换营业状态\n[F]制作美食\n[R]顾客请求\n[Esc]暂停游戏\n" << white;
+			  << "[Tab]切换营业状态\n[F]烹饪手册\n[R]顾客请求\n[Esc]暂停游戏\n" << white;
 	int input = 0;
 	while (1){
 		input = _getch();
@@ -89,7 +89,7 @@ void RestaurantUI::ResOpenMenu(){
 			;
 	//[F]制作美食
 		case 102:
-			CookedUI();
+			CookedUI(0);
 			return this->ResOpenMenu();
 			break;
 			;
@@ -311,44 +311,98 @@ void RestaurantUI::IceBoxUI(int page){//page为当前页，0为第一页
 	}
 }
 
-void RestaurantUI::CookedUI(){
+void RestaurantUI::CookedUI(int page/*0为第一页*/) {
 	system("cls");
-	while (1) {
-		std::cout << blue << "烹饪!\n" << white;
-		std::cout << green << "[Tab]烹饪手册\n[F]返回\n[Esc]暂停\n" << white;
-		switch ((int)_getch()){
-		//[Tab]烹饪手册
-		case 9:
-			HandBookUI();
-			return this->CookedUI();
-			break;
 
-		//[F]返回
-		case 102:
-			system("cls");
-			return;
-			break;
+	std::cout << green << page + 1 << "/" << restaurant->all_cuisine.size() << Back;
 
-		//[Esc]暂停游戏
-		case 27:
-			//游戏正在运行
-			if (!pausestate) {
-				PauseGame();
-			}
-			else {
-				//游戏已暂停
-				ResumeGame();
-			}
-			break;
+	std::cout << blue << restaurant->all_cuisine[page]->name << Back << white;
 
-		default:
-			break;
-		}
+	std::cout << green << "材料:" << blue << Back;
+
+	for (int i = 0; i < restaurant->all_cuisine[page]->formulation.size();) {
+		std::cout << restaurant->all_cuisine[page]->formulation[i]->name << Back;
+		i++;
 	}
-}
+	std::cout << "烹饪时间:" << restaurant->all_cuisine[page]->time / 1000 << "s";
+	std::cout << white;
 
-void RestaurantUI::HandBookUI(){
-	
+	std::cout << green << "[Q]/[E]向前/向后翻页\n"
+		<< "[Tab]搜索\n[Esc]退出\n" << white;
+
+	int input = 0;
+
+	while (1) {
+		input = _getch();
+
+		//[Q]翻页
+		if (input == 113 && page - 1 > 0) {
+			return this->CookedUI(page - 1);
+		}
+
+		//[E]翻页
+		if (input == 101 && page + 1 < restaurant->all_cuisine.size()) {
+			return this->CookedUI(page + 1);
+		}
+
+		//[Esc]
+		if (input == 27) {
+			return;
+		}
+
+		//[Tab]检索
+		if (input == 7) {
+			system("cls");
+
+			std::cout << green << "输入检索的食物的名称:\n" << blue;
+
+			std::vector<int>nums;
+			std::string str_temp;
+			getline(std::cin, str_temp);
+
+			std::cout << "查找中……\n";
+
+			for (int i = 0; i < restaurant->all_cuisine.size();) {
+
+				if (restaurant->all_cuisine[i]->name.size() >= str_temp.size() && restaurant->all_cuisine[i]->name.substr(0, str_temp.size()) == str_temp) {
+					nums.push_back(i);
+				}
+
+				i++;
+			}
+
+			system("cls");
+
+			if (nums.empty()) {
+				std::cout << yellow << "找不到您要找到商品" << green << str_temp << Back << white;
+				system("pause");
+				system("cls");
+				return this->CookedUI(page);
+			}
+
+			std::cout << green << "查找结果:\n" << yellow;
+
+			for (int i = 0; i < nums.size();) {
+				std::cout << "[" << i << "]" << yellow << restaurant->all_cuisine[nums[i]]->name << Back;
+				i++;
+			}
+			std::cout << green << "输入结果前的序号跳转\n" 
+				<< "[Esc]返回" << white;
+			while (1) {
+				input = _getch();
+
+				if (input - 48 < nums.size()) {
+					return this->CookedUI(nums[input - 48]);
+				}
+
+				if (input == 27) {
+					return this->CookedUI(page);
+				}
+			}
+		}
+
+
+	}
 }
 
 void RestaurantUI::ProcessRequit(){
