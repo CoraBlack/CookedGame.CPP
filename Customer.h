@@ -1,6 +1,6 @@
 //顾客costomer类的设计
-#ifndef COSTOMER_H
-#define COSTOMER_H
+#ifndef CUSTOMER_H
+#define CUSTOMER_H
 #include"Restaurant.h"
 #include"Thread.h"
 class Customer
@@ -12,6 +12,7 @@ public:
 	float GetPayAmount();							//获取顾客订单报酬
 	void SetPayAmount(float set);					//设置顾客订单报酬
 	;
+	std::vector<cuisine>needs;						//顾客的订单需求
 //店内就餐(搁置)
 	/*
 	void Enter();									//进店
@@ -31,8 +32,7 @@ private:
 	Thread* custrd;									//线程
 	int wait_time_min = 60'000;						//默认是一分钟(千分之一秒为单位)
 	int wait_time_max = 180'000;					//默认是三分钟(千分之一秒为单位)
-	std::vector<cuisine>needs;						//顾客的订单需求
 	float pay_amount = 0;							//顾客下单的预计报酬
 	bool needsstate = 0;							//顾客需求的状态(0为未满足，1为满足)
 };
-#endif
+#endif 

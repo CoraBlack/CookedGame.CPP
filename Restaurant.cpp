@@ -5,8 +5,6 @@ void Restaurant::Level_1(){
 }
 //构造函数
 Restaurant::Restaurant(){
-//存入食材(默认)	
-	all_cuisine.push_back(fry_chicken_chops);
 	return;
 }
 void Restaurant::SetLevel(int num){level = num; return;}

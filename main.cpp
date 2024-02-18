@@ -2,7 +2,7 @@
 #include"statement.h"
 #include<Windows.h>
 #include<thread>
-using namespace std;
+
 //字体颜色
 std::string red = "\033[31m";
 std::string green = "\033[32m";
@@ -25,6 +25,7 @@ std::vector<cuisine>all_cuisine;			//全部菜肴
 //关于多线程
 Thread* createtrd = nullptr;			    //用于创建顾客新对象的专用线程对象
 std::mutex* mtx_pause = nullptr;            //初始化线程锁
+std::mutex* mtx_autosave = nullptr;		    //用于防止自动保存反复开启的保护锁
 std::mutex* mtx_save = nullptr;
 std::vector<Thread*>threads;                //线程组
 //存档名称
@@ -45,41 +46,72 @@ IngredientMarketUI* market_weight = new IngredientMarketUI();
 
 
 
-
 //主函数
 int main(){
     //后台初始化
 
-    thread initialize_td(Initialize);   //创建一条线程用于处理初始化内容
+    std::thread initialize_td(Initialize);   //创建一条线程用于处理初始化内容
     initialize_td.detach();             //将初始化进程后台处理
+
+    //配置文件加载
     {
         //获取设置文件中信息
-        std::string settingpath = "C:/Users/Public/Documents/CookedSetting.txt";
-        std::ifstream ifs(settingpath);
-        ifs.open(settingpath);
+        std::string settingpath = "CookedSetting.txt";
+        std::ifstream ifs(settingpath);                 //输入文件流
+        ifs.open(settingpath,std::ios::in);
+
+        //检查标识符
+        std::string str_temp = "";
+        getline(ifs, str_temp);
+
         //设置文件不存在新建
         if (!ifs.is_open()) {
-            std::ofstream newfile(settingpath);
+            ifs.close();
+            ifs.clear();    //清除文件流状态
+            std::ofstream newfile(settingpath);         //局部输出文件流
             newfile.open(settingpath);
-            newfile << autosave_state;
-            newfile << autosave_time;
+            newfile << checksetting;                    //配置文件标识符
+            newfile << NumToString((int)autosave_state);
+            newfile << NumToString((int)autosave_time);
             newfile.close();
             newfile.clear();
         }
-        //文件存在，读取设置文件
+
+        //配置文件验证失败，覆写设置文件
+        else if(str_temp != checksetting){
+            ifs.close();
+            ifs.clear();    //清除文件流状态
+            std::ofstream newfile(settingpath);         //局部输出文件流
+            newfile.open(settingpath, std::ios::trunc, std::ios::out);
+            std::cout << yellow << "Warning:配置文件验证失败，正在为您覆写配置文件，您的设置将会恢复为默认设置\n" << white;
+            newfile << checksetting;                    //配置文件标识符
+            newfile << NumToString((int)autosave_state);
+            newfile << NumToString((int)autosave_time);
+            newfile.close();
+            newfile.clear();
+        }
+
+        //文件存在且验证成功，读取设置文件
         else {
             autosave_state = (bool)StringToInt(GetFileLine(2, settingpath));        //读取自动存档状态
+            autosave_time = (int)StringToInt(GetFileLine(3, settingpath));          //读取自动存档时间
+            ifs.close();
+            ifs.clear();    //清除文件流状态
         }
-        ifs.close();
-        ifs.clear();    //清除文件流状态
+        
     }
-    //开场文字（调试先屏蔽）
+
+    //后台自动保存
+    std::thread autosave_td(LaunchAutoSave);
+    autosave_td.detach();
+
     //确定运行环境
-    cout << yellow << "Warning:\n" << white 
+    std::cout << yellow << "Warning:\n" << white 
         << "本游戏仅能在Windows平台上运行，为确保彩字能够正常运行，请确保系统在Win10以上\n"
         <<"若您的Windows版本不满足需求，您可以按下[Tab]来屏蔽所有彩字，来确保游戏的正常运行\n"
         <<"若您的Windows版本能正常运行，请按下键盘上其它键以正常继续游戏\n";
-//屏蔽彩字    
+
+    //屏蔽彩字    
     if (_getch() == 9) {
         red = "";
         yellow = "";
@@ -89,7 +121,7 @@ int main(){
         std::cout << "彩字已屏蔽!";
         system("cls");
     }
-    ;
+    
     //主流程入口函数(流程托管)
     MainGui* main_weight = new MainGui;
     main_weight->GameStart();
@@ -110,7 +142,10 @@ int main(){
 
 
 
-
+;
+;
+;
+;
 //全局函数定义区
 //测试通道
 void Test() {
@@ -129,13 +164,14 @@ void Test() {
     system("pause");
     */
     ;
-    /*
+    
     //测试键盘输入
     while (1) {
         cout << _getch() << "\n";
     }
-    */
+    
     ;
+    
     /*
     //测试存档功能
     cout << "input\n";
@@ -143,6 +179,7 @@ void Test() {
     save_name += ".txt";
     SaveGameAll();
     */
+
     ;
     /*
     //测试字符串流
@@ -156,6 +193,31 @@ void Test() {
     system("pause");
 }
 ;
+void LaunchAutoSave(){
+    //检测自动保存是否正在运行，或存档是否正常输入
+    if (mtx_autosave != nullptr || save_name == "") {
+        return;                 //退出
+    }
+
+    //上锁
+    mtx_autosave = nullptr;
+    mtx_autosave = new std::mutex;
+    mtx_autosave->lock();
+
+    while (autosave_state) {
+        Sleep(autosave_time);
+        if (!autosave_state) {
+            return;
+        }
+        SaveGameAll();
+    }
+    //解锁并销毁
+    mtx_autosave->unlock();
+    delete mtx_autosave;
+    mtx_autosave = nullptr;
+    return;
+}
+
 void PauseGame(){
 //对全局锁上锁
     //分配内存
@@ -220,50 +282,12 @@ void SaveGameAll() {
         return;                                         //提前退出函数
     }
 
-    //临时量
-    std::string* str_temp = nullptr;                    
-    str_temp = new std::string;
-    fs >> *str_temp;
-
-    //目标文件不是存档文件
-    if (*str_temp != checkword) {
-        std::cerr << red << "Save Error:目标文件不是存档文件!\n" << white;
-        fs.close();
-        fs.clear();                                     //重置文件流
-        delete str_temp;
-        str_temp = nullptr;                             //清理临时量
-        return;
-    }
-    
-    *str_temp = GetFileLine(2, save_name);              //获取版本号
-    if (*str_temp == "wrong") {
-        fs.close();
-        fs.clear();
-        delete str_temp;
-        str_temp = nullptr;
-        return;
-    }
-
-    //目标文件版本与当前游戏版本不一
-    if (*str_temp != version) {
-        std::cout << yellow << "Save Warning:存档版本和游戏版本不符，正在覆盖当前存档\n" << white;
-    }
-    else {
-    //检查版本时无法打开文件
-        std::cerr << red << "Save Error:无法正常打开文件" << white;
-        fs.close();
-        fs.clear();                                     //重置文件流
-        delete str_temp;
-        str_temp = nullptr;                             //清理临时量
-        return;
-    }
     fs.close();
-    fs.clear();                                         //重置文件流
-    delete str_temp;
-    str_temp = nullptr;                                 //清理临时量
+    fs.clear();
 
+    //文件流
     fs = std::fstream(save_name);
-    fs.open(save_name, std::ios::trunc, std::ios::out); //使用turnc模式清除全部内容，out模式写入内容
+    fs.open(save_name, std::ios::trunc|std::ios::out); //使用turnc模式清除全部内容，out模式写入内容
 
     //存档在写入时无法打开
     if (!fs.is_open()) {
@@ -281,25 +305,33 @@ void SaveGameAll() {
     fs << "PlayerName";                                 //玩家名称阶段符
     fs << player->GetPlayerName();                      //存入玩家名称
     fs << "PlayerMoney";                                //玩家存款标识符
-    fs << player->GetPlayerMoney();                     //存入玩家存款
+    fs << NumToString(player->GetPlayerMoney());        //存入玩家存款
     fs << "Plot";                                       //剧情通关数标识符
-    fs << (int)player->GetPlayerPlot();                 //存入剧情通关数
+    fs << NumToString((int)player->GetPlayerPlot());    //存入剧情通关数
 
     //Restaurant
     fs << "RestaurantTurnover";                         //餐厅营业额标识符
-    fs << restaurant->GetTurnover();                    //存入餐厅营业额
+    fs << NumToString(restaurant->GetTurnover());       //存入餐厅营业额
     fs << "RestaurantLevel";                            //餐厅等级标识符
-    fs << (int)restaurant->GetLevel();                  //存入餐厅等级
+    fs << NumToString((int)restaurant->GetLevel());     //存入餐厅等级
     fs << "IceBoxMax";                                  //餐厅冰箱最大存量标识符
-    fs << (int)restaurant->GetIceBoxMax();              //存入冰箱最大存量
+    fs << NumToString((int)restaurant->GetIceBoxMax()); //存入冰箱最大存量
 
-    //IceBox
-    fs << "IceBox";                                     //冰箱标识符
-    
+    //Ingredient
+    for (int i = 0; i < market_weight->all_ingredient.size();) {
+        fs << "Ingredient_" + NumToString(i + 1);
+        for (int j = 0; j < market_weight->all_ingredient[i].size();) {
+            fs << NumToString(market_weight->all_ingredient[i][j]->possession);
+            j++;
+        }
+        fs << "Break";
+        i++;
+    }
 
     fs << "End";                                        //结束符
     fs.close();
     fs.clear();
+
     delete mtx_save;
     mtx_save = nullptr;
     return;
@@ -308,8 +340,8 @@ void SaveGameAll() {
 void Initialize() {
     //设置初始化状态
     initalize_state = 1;
+
     //测试用文字
-    Sleep(1000);
 
     //std::cout << green << "Finish to initialize!" << white;
     return;
@@ -382,7 +414,7 @@ bool CheckSave() {
     //尝试打开
     ifs.open(save_name, std::ios::in);
     if (!ifs.is_open()) {
-        std:cout << red << "Read Error:无法打开存档文件!\n" << white;
+        std::cout << red << "Read Error:无法打开存档文件!\n" << white;
         ifs.close();
         ifs.clear();
         return 0;
@@ -455,11 +487,16 @@ void ReadSaveAll() {
             continue;
         }
 
-        //冰箱食材
-        if (str == "IceBox") {
-            line++;
-
-            continue;
+        //食材
+        if (str.size() >= 11 && str.substr(0, 11) == "Ingredient_") {
+            for (int i = 0; i < market_weight->all_ingredient[StringToInt(str[str.length() - 1])].size();) {
+                line++;
+                if (GetFileLine(line, save_name) == "Break") {
+                    break;
+                }
+                market_weight->all_ingredient[StringToInt(str[str.length() - 1])][i]->possession = StringToInt(GetFileLine(line, save_name));
+                i++;
+            }
         }
 
         //结束符

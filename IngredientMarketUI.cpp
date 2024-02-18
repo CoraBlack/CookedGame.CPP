@@ -2,25 +2,18 @@
 #include"statement.h"
 #include<iomanip>
 #include"conio.h"
-IngredientMarketUI::IngredientMarketUI(){
-//存入食材
-
-
-//肉类
-	this->meat.push_back(&low_beef);
-	this->meat.push_back(&low_pork);
-	this->meat.push_back(&low_chicken);
-	this->meat.push_back(&low_Chicken_chops);
-//存入全体中
-	this->all_ingredient.push_back(this->vegetable);
-	this->all_ingredient.push_back(this->meat);
+IngredientMarketUI::IngredientMarketUI() {
+	all_ingredient.push_back(vegetable);
+	all_ingredient.push_back(meat);
+	all_ingredient.push_back(cereals);
+	return;
 }
-;
+
 void IngredientMarketUI::IngredientMarket() {
 	system("cls");
 	std::cout << blue << "Welcome to Ingredient Market!" << Back;
 	std::cout << yellow << "[Esc]返回小餐馆(记得付款喔!)\n[Tab]结账\n[Space]购物车\n" 
-			  << green << "[0]全部食材商品\n[1]蔬菜\n[2]肉类\n[3]蛋奶制品\n[4]调味品\n";
+			  << green << "[0]全部食材商品\n[1]蔬菜\n[2]肉类\n[3]谷物制品\n[4]调味品\n";
 	while (1) {
 		int input = _getch();
 		switch (input) {
@@ -38,6 +31,10 @@ void IngredientMarketUI::IngredientMarket() {
 			system("cls");
 			return this->ChooseSomeIngredient(this->meat);
 			return this->IngredientMarket();
+			break;
+
+		case 51:
+			return this->ChooseSomeIngredient(this->cereals);
 			break;
 
 	//行为操作

@@ -5,6 +5,7 @@
 #include"IngredientMarketUI.h"
 class Player
 {
+	
 public:
 	std::vector<ingredient*>hand;			//手持物品(食材)最多只能同时拿两个东西
 	void SetPlayerName(std::string str);	//设置玩家名称

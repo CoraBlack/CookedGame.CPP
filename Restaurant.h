@@ -5,7 +5,9 @@
 //菜肴
 struct cuisine {
 	std::string name;
-	int price;				//价格
+	int price;							//价格
+	int time;							//合成时间
+	std::vector<ingredient*>formulation;//配方
 };
 class Restaurant
 {
@@ -14,11 +16,19 @@ public:
 	std::vector<std::string>requiedment;//顾客的请求文字集合
 //菜肴
 	//Level 0
-	cuisine fry_chicken_chops = { "鸡排汉堡",8 };
+	cuisine chicken_burger = { "鸡排汉堡",8 ,10'000 ,{&market_weight->low_burger_bun,&market_weight->low_Chicken_chops}};
+	cuisine beef_burger = { "牛排汉堡" , 11 , 10'000 , {&market_weight->low_beef_chops,&market_weight->low_burger_bun} };
+	cuisine pork_burger = { "猪排汉堡" , 10 , 10'000 , {&market_weight->low_burger_bun,&market_weight->low_pork_chops} };
+
 	//Level 1
 
-	//Level 2
-	std::vector<cuisine>all_cuisine;	//全部菜肴
+
+	//all//全部菜肴
+	std::vector<cuisine>all_cuisine = {
+		chicken_burger,
+		beef_burger,
+		pork_burger
+	};
 	void Level_1();						//餐厅升级至等级1
 //摊位
 	Restaurant();
