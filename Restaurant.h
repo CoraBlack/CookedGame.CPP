@@ -41,7 +41,9 @@ public:
 	void SetOpenState(bool set_state);	//设置店铺营业状态
 	float GetTurnover();				//获取店铺营业额
 	void SetTurnover(float set);		//设置店铺营业额
-	std::vector<ingredient*>bin;		//小推车的出摊储物箱
+
+	std::vector<cuisine*>bin;		//小推车的出摊储物箱
+
 //冰箱
 	std::vector<ingredient*>ice_box;						  //冰箱（食材存货）
 	void SwapIngredient(ingredient*& ing1, ingredient*& ing2);//用于为排序而服务的交换函数(交换的是指针的引用)

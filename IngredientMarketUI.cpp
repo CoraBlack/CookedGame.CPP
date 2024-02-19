@@ -34,6 +34,7 @@ void IngredientMarketUI::IngredientMarket() {
 			break;
 
 		case 51:
+			system("cls");
 			return this->ChooseSomeIngredient(this->cereals);
 			break;
 

@@ -37,9 +37,9 @@ const char* version = "0.62";
 ;
 //对象实例化区
 Player* player = new Player();
+IngredientMarketUI* market_weight = new IngredientMarketUI();
 Restaurant* restaurant = new Restaurant();
 RestaurantUI* res_weight = new RestaurantUI();
-IngredientMarketUI* market_weight = new IngredientMarketUI();
 ;
 ;
 ;
