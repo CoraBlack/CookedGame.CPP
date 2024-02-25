@@ -6,6 +6,7 @@
 //食材结构体
 struct ingredient {
 	std::string name;
+	int id;					//食材ID[使用两位或更多位数以上，第一位为食材类型，从第二位起才为当前类型中序数]
 	unsigned grade;			//食材等级(1为低级,2为一般,3为高级)
 	float price;			//价格
 	int possession;			//拥有量
@@ -14,15 +15,21 @@ class IngredientMarketUI:public MainGui{
 public:
 
 //食材
+	//蔬菜类
+
+
+
 	//肉类
-	ingredient low_beef_chops = { "半成品牛排(低级)",1,6,0 };
-	ingredient low_pork_chops = { "半成品猪排(低级)",1,5,0 };
-	ingredient low_Chicken_chops = { "半成品鸡扒(低级)",1,4,0 };
+	ingredient low_beef_chops = { "半成品牛排(低级)",21,1,6,0 };
+
+	ingredient low_pork_chops = { "半成品猪排(低级)",22,1,5,0 };
+
+	ingredient low_Chicken_chops = { "半成品鸡扒(低级)",23,1,4,0 };
 
 	//谷物类
-	ingredient low_burger_bun = { "汉堡面包(低级)",1,0.5,0 };
+	ingredient low_burger_bun = { "汉堡面包(低级)",31,1,0.5,0 };
 
-	;
+	
 
 //存储管理集
 	std::vector<ingredient*>vegetable = {

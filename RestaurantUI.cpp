@@ -1,40 +1,86 @@
 #include "RestaurantUI.h"
 #include"statement.h"
 #include"conio.h"
+#include"iomanip"
 void RestaurantUI::MainResMenu() {
-	system("cls");
+
 	std::cout << yellow << "您接下来要做什么?[您的餐馆处于" << blue << "关门" << yellow << "状态]" << Back;
-	std::cout << green << "[Tab]出摊出摊!!!\n[1]食材市场\n[2]去冰箱看看\n" << white;
+	std::cout << yellow << "Level:" << restaurant->GetLevel() << "\t"
+		<< "营业额:" << std::setprecision(2) << std::fixed << restaurant->GetTurnover() << Back;
+	std::cout << green << "[Tab]出摊出摊!!!\n[R]手动存档\n[1]食材市场\n[2]去冰箱看看\n" << white;
+	
 	//选项
 	while (1) {
+
 		int input = _getch();
+
 		switch (input) {
-	//[Tab]开门营业
+
+		//[Tab]开门营业
 		case 9:
-		//新建后台顾客线程
+			
+			//新建后台顾客线程
+			
 			//检测线程是否已存在
+			
 			if (createtrd == nullptr) {
 				createtrd = nullptr;
 				createtrd = new Thread(CreateCustomer);
 			}
+			
 			restaurant->SetOpenState(1);
-		//切换至开门的营业界面
+			
+			//切换至开门的营业界面
 			system("cls");
+			
 			this->ResOpenMenu();
+			
 			return this->MainResMenu();
 			break;
-			;
-	//[1]食材市场
+			
+		case 114:
+
+			system("cls");
+			
+			if (!CheckSave()) {
+
+				system("pause");
+				system("cls");
+
+				return this->MainResMenu();
+
+			}
+
+			std::cout << yellow << "正在向存档" + green + save_name + yellow + "保存数据……\n";
+
+			SaveGameAll();
+
+			system("pause");
+			system("cls");
+
+			return this->MainResMenu();
+
+			break;
+
+
+		//[1]食材市场
 		case 49:
 			market_weight->IngredientMarket();
+			
 			return this->MainResMenu();
+			
 			break;
-			;
-	//[2]看看冰箱
+			
+
+		//[2]看看冰箱
 		case 50:
+			
 			system("cls");
+			
 			this->IceBoxUI(0);
+			
 			return this->MainResMenu();
+			
 			break;
 			;
 		default:
@@ -45,63 +91,92 @@ void RestaurantUI::MainResMenu() {
 }
 ;
 void RestaurantUI::ResOpenMenu(){
+
 	std::cout << blue << "Do it!顾客,正在源源不断向你进军!!!\n" << green
 			  << "[Tab]切换营业状态\n[F]烹饪手册\n[R]顾客请求\n[c]保鲜箱\n[Esc]暂停游戏\n" << white;
+
 	int input = 0;
+
 	while (1){
+
 		input = _getch();
+
 		switch (input) {
-	//[Tab]收摊
+		//[Tab]收摊
+
 		case 9:
-		//营业状态当前为营业时
+
+			//营业状态当前为营业时
 			if (restaurant->GetOpenState()) {
-			//设置为停止营业
+
+				//设置为停止营业
 				restaurant->SetOpenState(0);
-			//顾客未清空
+
+				//顾客未清空
 				if (!customers.empty()) {
 					std::cout << yellow << "您还有客人未离开!我们已经调整营业状态为停止，等待客人全部离开\n" << white;
+
 					//初始化输入值
 					input = 0;
+
 				//重复循环
 					continue;
+
 				}
-			//顾客已清空
+
+				//顾客已清空
+
 				//清空线程集
 				for (int i = 0; i < threads.size();) {
 					delete threads[i];
 					i++;
+
 				}
 				return;
+
 			}
 
-		//营业状态为停止营业时
+			//营业状态为停止营业时
+
 			//设置状态为营业
 			restaurant->SetOpenState(1);
-		//启动顾客生成程序
+
+			//启动顾客生成程序
+
 			//检测生成程序已经存在
 			if (createtrd != nullptr) {	
 				continue;
 			}
+
 			//生成程序线程指针为空,重新生成
 			createtrd = nullptr;
 			createtrd = new Thread(CreateCustomer);
+
 			break;
-			;
-	//[F]制作美食
+
+			
+		//[F]制作美食
 		case 102:
+
 			CookedUI(0);
+
 			return this->ResOpenMenu();
+
 			break;
 			;
 
-	//[R]
+		//[R]
 		case 114:
+
 			ProcessRequit();
+
 			return this->ResOpenMenu();
+
 			break;
 			
-	//[C]保鲜箱
+		//[C]保鲜箱
 		case 99:
+
 			if (restaurant->bin.empty()) {
 				std::cout << yellow << "空空如也(T_T)……\n" << white;
 				system("pause");
@@ -118,25 +193,30 @@ void RestaurantUI::ResOpenMenu(){
 			return this->ResOpenMenu();
 			break;
 
-	//[Esc]
+		//[Esc]
 		case 27:
 
-		//游戏正在运行
+			//游戏正在运行
 			if (!pausestate){
 				PauseGame();
 			}
 			else {
-		//游戏已暂停
+			//游戏已暂停
+
 				if (createtrd == nullptr) {
 					createtrd = nullptr;
 					createtrd = new Thread(CreateCustomer);
 				}
+
 				ResumeGame();
+
 			}
 			break;
-			;
+			
+
 		default:
 			break;
+
 		}
 	}
 }
@@ -266,6 +346,7 @@ void RestaurantUI::IceBoxUI(int page){//page为当前页，0为第一页
 		switch (input){
 	//退出冰箱
 		case 27:
+			system("cls");
 			return;
 			break;
 			;

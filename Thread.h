@@ -7,7 +7,6 @@
 class Thread{
 public:
 	Thread(std::function <void()> func);			//构造函数，构造后台线程
-	std::thread::id GetThreadID();					//获取线程的ID
 	~Thread();										//析构函数，终止进程
 private:
 	std::thread* trdworker;							//线程

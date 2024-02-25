@@ -112,7 +112,9 @@ void IngredientMarketUI::IngredientMarket() {
 					system("cls");
 					std::cout << yellow << "欢迎下次光临！您的余额" << green << player->GetPlayerMoney() << "元\n";
 					system("pause");
+
 				//清空购物车
+					this->total_price = 0;
 					this->shopping_cart.clear();
 					return this->IngredientMarket();
 					break;
@@ -134,6 +136,7 @@ void IngredientMarketUI::IngredientMarket() {
 			
 			//Esc返回上一级
 				case 27:
+					
 					return this->IngredientMarket();
 					break;
 
@@ -146,6 +149,7 @@ void IngredientMarketUI::IngredientMarket() {
 		case 27://Esc   返回上一级
 			//检查购物车是否为空
 			if (shopping_cart.empty()) {
+				system("cls");
 				return;
 			}
 			else {

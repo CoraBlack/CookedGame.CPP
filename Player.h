@@ -18,7 +18,7 @@ public:
 private:
 
 	std::string name = "";			//玩家名称
-	float money = 1000;				//玩家余额
+	float money = 1000.0f;			//玩家余额
 	unsigned int plot = 0;			//玩家已通关剧情数
 };
 extern Player* player;

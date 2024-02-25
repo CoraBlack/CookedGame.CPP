@@ -35,6 +35,3 @@ Thread::~Thread(){
 	return;
 }
 ;
-
-
-std::thread::id Thread::GetThreadID() { return trdworker->get_id(); }

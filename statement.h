@@ -4,24 +4,25 @@
 #ifndef STATEMENT_H
 #define STATEMENT_H
 //头文件
+#include"conio.h"
+#include"Customer.h"
+#include "IngredientMarketUI.h"
+#include"Player.h"
+#include"Restaurant.h"
+#include"RestaurantUI.h"
+#include"Thread.h"
+#include<fstream>
 #include<iostream>
+#include<mutex>
+#include<random>
+#include<sstream>
 #include<string>
 #include<thread>
 #include<vector>
-#include<sstream>
-#include<fstream>
-#include<random>
 #include<Windows.h>
-#include<mutex>
-#include"conio.h"
-#include"Thread.h"
-#include"Player.h"
-#include"Customer.h"
-#include"Restaurant.h"
-#include"RestaurantUI.h"
-#include "IngredientMarketUI.h"
 //宏定义换行操作
 #define Back "\n"
+#define Endl std::endl
 ;
 //字体颜色
 extern std::string red;
@@ -67,7 +68,7 @@ void Test();							//测试通道
 inline void PrintVerbatim(std::string str) {
 	for (int i = 0; i < str.size();) {
 		std::cout << str[i];
-		Sleep(100);
+		Sleep(80);
 		i++;
 	}
 	std::cout << Back;
@@ -133,7 +134,7 @@ inline float StringToFloat(std::string str) {
 inline std::string GetFileLine(int line/*指定行列*/, std::string file/*文件名*/) {
 	std::ifstream ifs;
 	std::string str;
-	ifs.open(file, std::ios::in);	
+	ifs.open(file.c_str(), std::ios::in);
 	if (!ifs.is_open()) {
 		std::cerr << red << "Error:failed to open file!" << white;
 		ifs.close();
