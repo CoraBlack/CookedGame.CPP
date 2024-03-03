@@ -475,11 +475,13 @@ void CreateCustomer() {
     while (restaurant->GetOpenState()) {
     //随机三十秒到两分钟创建一个顾客
         //Sleep(Random(30'000, 120'000));
-        for (int i = 0; i < Random(300, 1200);) {
+        for (int i = 0; i < Random(200, 600);) {
             Sleep(100);
         //检测开门状态
             if (!restaurant->GetOpenState()) {
             //关门了提前停止
+                delete createtrd;
+                createtrd = nullptr;
                 return;
             }
         //检测暂停状态
@@ -618,7 +620,7 @@ void ReadSaveAll() {
         restaurant->ice_box.clear();
 
         //食材
-        if (str.size() >= 11 && str.substr(0, 11) == "Ingredient_") {
+        if (str.size() >= 11 && str.substr(0, 11) == "Ingredient_" && StringToInt(str.back()) <= market_weight->all_ingredient.size()) {
 
             line++;
 

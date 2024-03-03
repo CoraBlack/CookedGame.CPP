@@ -30,8 +30,8 @@ public:
 	inline bool GetNeedsState() { return needsstate; };
 private:
 	Thread* custrd;									//线程
-	int wait_time_min = 60'000;						//默认是一分钟(千分之一秒为单位)
-	int wait_time_max = 180'000;					//默认是三分钟(千分之一秒为单位)
+	int wait_time_min = 30'000;						//默认是三十秒(千分之一秒为单位)
+	int wait_time_max = 90'000;						//默认是一分半钟(千分之一秒为单位)
 	float pay_amount = 0;							//顾客下单的预计报酬
 	bool needsstate = 0;							//顾客需求的状态(0为未满足，1为满足)
 };

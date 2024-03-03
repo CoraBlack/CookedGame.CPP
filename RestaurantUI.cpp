@@ -24,8 +24,10 @@ void RestaurantUI::MainResMenu() {
 			//检测线程是否已存在
 			
 			if (createtrd == nullptr) {
+
 				createtrd = nullptr;
 				createtrd = new Thread(CreateCustomer);
+
 			}
 			
 			restaurant->SetOpenState(1);
@@ -114,7 +116,7 @@ void RestaurantUI::ResOpenMenu(){
 
 				//顾客未清空
 				if (!customers.empty()) {
-					std::cout << yellow << "您还有客人未离开!我们已经调整营业状态为停止，等待客人全部离开\n" << white;
+					std::cout << yellow << "您还有客人未离开!我们已经调整营业状态为停止，已经停止顾客的生成，等待客人全部离开\n" << white;
 
 					//初始化输入值
 					input = 0;
@@ -128,11 +130,33 @@ void RestaurantUI::ResOpenMenu(){
 
 				//清空线程集
 				for (int i = 0; i < threads.size();) {
+
+					if (threads[i] == createtrd) {
+						i++;
+						continue;
+					}
+
 					delete threads[i];
 					i++;
-
 				}
+				
+				system("cls");
 				return;
+
+			}
+			else {
+
+				restaurant->SetOpenState(1);
+
+				if (createtrd == nullptr) {
+
+					createtrd = nullptr;
+					createtrd = new Thread(CreateCustomer);
+
+					std::cout << yellow + "Message:恢复生成顾客的功能，店铺已重新开门!\n" + white;
+
+					continue;
+				}
 
 			}
 
@@ -519,10 +543,10 @@ void RestaurantUI::CookedUI(int page/*0为第一页*/) {
 
 			for (int i = 0; i < restaurant->all_cuisine[page]->formulation.size();) {
 
-				for (int j = 0; i < restaurant->ice_box.size(); i++) {
+				for (int j = 0; i < restaurant->ice_box.size();) {
 
 					//检测是否相等
-					if (restaurant->ice_box[j]->name == restaurant->all_cuisine[page]->formulation[i]->name) {
+					if (restaurant->ice_box[j]->id == restaurant->all_cuisine[page]->formulation[i]->id) {
 						nums.push_back(j);
 						break;
 					}
@@ -530,12 +554,13 @@ void RestaurantUI::CookedUI(int page/*0为第一页*/) {
 
 				}
 				//材料不足提前跳出
-				if (nums.size() != i) {
+				if (nums.size() != i + 1) {
 					std::cout << yellow << "材料不够咯！\n" << white;
 					system("pause");
 					system("cls");
 					return this->CookedUI(page);
 				}
+
 				i++;
 
 			}
@@ -591,7 +616,7 @@ void RestaurantUI::ProcessRequit(){
 	for (int i = 0; i < customers.size();) {
 		std::cout << blue << "[" << i << "]" << "Customer:  " << white;
 		for (int j = 0; j < customers[i]->needs.size();) {
-			std::cout << yellow << customers[i]->needs[j].name << white;
+			std::cout << yellow << customers[i]->needs[j].name + "	" << white;
 			j++;
 		}
 		std::cout << Back;
@@ -622,14 +647,14 @@ void RestaurantUI::ProcessRequit(){
 
 			//提交
 			if (input2 == 32) {
-				std::vector<int>nums;
+				std::vector<cuisine*>nums;
 
 				//检索
 				for (int i = 0; i < customers[input - 48]->needs.size();) {
 					for (int j = 0; j < restaurant->bin.size();) {
 						//检索成功
 						if (restaurant->bin[j]->name == customers[input - 48]->needs[i].name) {
-							nums.push_back(j);
+							nums.push_back(restaurant->bin[j]);
 							break;
 						}
 						j++;
@@ -642,16 +667,28 @@ void RestaurantUI::ProcessRequit(){
 					}
 					i++;
 				}
-				
+
 				//循环正常完成(开始处理数据）
 				for (int i = 0; i < nums.size();) {
-					restaurant->bin.erase(restaurant->bin.begin() + nums[i]);
+					
+					for (int j = 0; j < restaurant->bin.size();) {
+
+						if (restaurant->bin[j] == nums[i]) {
+							restaurant->bin.erase(restaurant->bin.begin() + j);
+							break;
+						}
+
+						j++;
+					}
+
 					i++;
 				}
+					
 				nums.clear();
 				customers[input - 48]->SetNeedsState(1);
-				std::cout << green << "提交成功！\n";
 				system("cls");
+				std::cout << green << "提交成功！\n" << white;
+				std::cout << yellow + "本次单笔收益:" + green << customers[input - 48]->GetPayAmount() << yellow + "元\n" + white;
 				system("pause");
 				return this->ResOpenMenu();
 			}
@@ -668,6 +705,7 @@ void RestaurantUI::ProcessRequit(){
 
 	//返回
 	if (input == 27) {
+		system("cls");
 		return;
 	}
 

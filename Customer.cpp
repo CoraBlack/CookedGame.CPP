@@ -28,9 +28,13 @@ void Customer::RequestedMessage(){
 //为顾客添加需求
 	for (int i = 0; i < Random(1, 3);) {
 	//随机需求
-		needs.push_back(*(restaurant->all_cuisine[Random(0, restaurant->all_cuisine.size() - 1)]));
+		int kind = Random(0, restaurant->all_cuisine.size() - 1);
+		needs.push_back(*(restaurant->all_cuisine[kind]));
+		pay_amount += restaurant->all_cuisine[kind]->price;
 		i++;
 	}
+	//加上小费
+	pay_amount += Random(0, pay_amount * 0.8);
 	std::cout << yellow << "Message:" << green << "新的顾客!\n";
 	//进入等待状态
 	return this->Waitting();
@@ -43,7 +47,7 @@ void Customer::Waitting(){
 		Sleep(100);
 //尝试上锁已判断能否暂停函数
 	//若暂停则上锁
-				if (pausestate) {
+		if (pausestate) {
 		//上锁堵塞线程
 			mtx_pause->lock();
 			mtx_pause->unlock();
